@@ -1,0 +1,30 @@
+# Ignore development and local files
+.git
+.gitignore
+.idea
+.vscode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.env
+.env.local
+
+# Local database
+db.sqlite3
+
+# Local media files (will be stored in S3 in production)
+media/
+
+# Documentation and other non-essential files
+README.md
+LICENSE
+docs/
+tests/
+
+# Local development settings
+local_settings.py
