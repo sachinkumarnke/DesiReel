@@ -1,0 +1,72 @@
+{% extends 'core/base.html' %}
+
+{% block title %}All Categories - DesiReel{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="content-header mb-4">
+        <h1 class="mb-2"><i class="fas fa-th-large me-2"></i>All Categories</h1>
+        <p class="lead" style="color: #d9d9d9;">Browse content by category</p>
+    </div>
+    
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for category in categories %}
+        <div class="col">
+            <div class="category-card">
+                <div class="category-card-body">
+                    <h3 class="category-card-title"><i class="fas fa-film me-2"></i>{{ category.name }}</h3>
+                    <p class="category-card-text">{{ category.description|truncatechars:100 }}</p>
+                    <a href="{% url 'core:category' category.id %}" class="btn btn-danger">Browse</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <div class="no-results">
+                <i class="fas fa-tags fa-4x mb-4 text-muted"></i>
+                <h3 class="mb-3">No categories found</h3>
+                <p class="text-muted mb-4">There are no categories available at the moment</p>
+                <a href="{% url 'core:home' %}" class="btn btn-danger">
+                    <i class="fas fa-home me-2"></i>Back to Home
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .category-card {
+        background-color: var(--card-bg);
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+        transition: all 0.3s;
+        height: 100%;
+    }
+    
+    .category-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(229, 9, 20, 0.3);
+    }
+    
+    .category-card-body {
+        padding: 2rem;
+    }
+    
+    .category-card-title {
+        color: var(--secondary-color);
+        margin-bottom: 1rem;
+        font-weight: 600;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    }
+    
+    .category-card-text {
+        color: #d9d9d9;
+        margin-bottom: 1.5rem;
+        min-height: 4.5rem;
+    }
+</style>
+{% endblock %}

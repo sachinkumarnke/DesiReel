@@ -1,0 +1,246 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Account Settings - DesiReel{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Settings Sidebar -->
+        <div class="col-lg-3 mb-4">
+            <div class="card bg-dark border-0">
+                <div class="card-body">
+                    <h5 class="mb-4 text-white">Account Settings</h5>
+                    <div class="nav flex-column nav-pills" id="settings-tab" role="tablist" aria-orientation="vertical">
+                        <button class="nav-link active text-start mb-2" id="preferences-tab" data-bs-toggle="pill" data-bs-target="#preferences" type="button" role="tab">
+                            <i class="fas fa-sliders-h me-2"></i>Preferences
+                        </button>
+                        <button class="nav-link text-start mb-2" id="notifications-tab" data-bs-toggle="pill" data-bs-target="#notifications" type="button" role="tab">
+                            <i class="fas fa-bell me-2"></i>Notifications
+                        </button>
+                        <button class="nav-link text-start mb-2" id="privacy-tab" data-bs-toggle="pill" data-bs-target="#privacy" type="button" role="tab">
+                            <i class="fas fa-user-shield me-2"></i>Privacy
+                        </button>
+                        <button class="nav-link text-start" id="security-tab" data-bs-toggle="pill" data-bs-target="#security" type="button" role="tab">
+                            <i class="fas fa-lock me-2"></i>Security
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <a href="{% url 'core:profile' %}" class="btn btn-outline-light w-100">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Profile
+                </a>
+            </div>
+        </div>
+        
+        <!-- Settings Content -->
+        <div class="col-lg-9">
+            <div class="card bg-dark border-0">
+                <div class="card-body">
+                    <div class="tab-content" id="settings-tabContent">
+                        <!-- Preferences Tab -->
+                        <div class="tab-pane fade show active" id="preferences" role="tabpanel" aria-labelledby="preferences-tab">
+                            <h3 class="mb-4 text-white">Preferences</h3>
+                            <form method="post" action="{% url 'core:update_settings' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="settings_tab" value="preferences">
+                                
+                                <div class="mb-4">
+                                    <h5 class="mb-3 text-white">Content Preferences</h5>
+                                    <div class="form-check form-switch mb-3">
+                                        <input class="form-check-input" type="checkbox" id="autoplayVideos" name="autoplay_videos" {% if profile.autoplay_videos %}checked{% endif %}>
+                                        <label class="form-check-label text-white" for="autoplayVideos">Autoplay videos</label>
+                                    </div>
+                                    <div class="form-check form-switch mb-3">
+                                        <input class="form-check-input" type="checkbox" id="showSubtitles" name="show_subtitles" {% if profile.show_subtitles %}checked{% endif %}>
+                                        <label class="form-check-label text-white" for="showSubtitles">Show subtitles by default</label>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <h5 class="mb-3 text-white">Display Settings</h5>
+                                    <div class="mb-3">
+                                        <label for="defaultLanguage" class="form-label text-white">Default Language</label>
+                                        <select class="form-select bg-dark text-white" id="defaultLanguage" name="default_language">
+                                            <option value="en" {% if profile.default_language == 'en' %}selected{% endif %}>English</option>
+                                            <option value="hi" {% if profile.default_language == 'hi' %}selected{% endif %}>Hindi</option>
+                                            <option value="ta" {% if profile.default_language == 'ta' %}selected{% endif %}>Tamil</option>
+                                            <option value="te" {% if profile.default_language == 'te' %}selected{% endif %}>Telugu</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">Save Preferences</button>
+                            </form>
+                        </div>
+                        
+                        <!-- Notifications Tab -->
+                        <div class="tab-pane fade" id="notifications" role="tabpanel" aria-labelledby="notifications-tab">
+                            <h3 class="mb-4 text-white">Notifications</h3>
+                            <form method="post" action="{% url 'core:update_settings' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="settings_tab" value="notifications">
+                                
+                                <div class="mb-4">
+                                    <h5 class="mb-3 text-white">Email Notifications</h5>
+                                    <div class="form-check form-switch mb-3">
+                                        <input class="form-check-input" type="checkbox" id="emailNotifications" name="email_notifications" {% if profile.email_notifications %}checked{% endif %}>
+                                        <label class="form-check-label text-white" for="emailNotifications">Enable email notifications</label>
+                                    </div>
+                                    <div class="form-check form-switch mb-3">
+                                        <input class="form-check-input" type="checkbox" id="newsletter" name="newsletter" {% if profile.newsletter %}checked{% endif %}>
+                                        <label class="form-check-label text-white" for="newsletter">Subscribe to newsletter</label>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <h5 class="mb-3 text-white">Notification Types</h5>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="newReleases" name="notify_new_releases" {% if profile.notify_new_releases %}checked{% endif %}>
+                                        <label class="form-check-label text-white" for="newReleases">New releases</label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="recommendations" name="notify_recommendations" {% if profile.notify_recommendations %}checked{% endif %}>
+                                        <label class="form-check-label text-white" for="recommendations">Recommendations</label>
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">Save Notification Settings</button>
+                            </form>
+                        </div>
+                        
+                        <!-- Privacy Tab -->
+                        <div class="tab-pane fade" id="privacy" role="tabpanel" aria-labelledby="privacy-tab">
+                            <h3 class="mb-4 text-white">Privacy Settings</h3>
+                            <form method="post" action="{% url 'core:update_settings' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="settings_tab" value="privacy">
+                                
+                                <div class="mb-4">
+                                    <h5 class="mb-3 text-white">Profile Privacy</h5>
+                                    <div class="form-check form-switch mb-3">
+                                        <input class="form-check-input" type="checkbox" id="publicProfile" name="public_profile" {% if profile.public_profile %}checked{% endif %}>
+                                        <label class="form-check-label text-white" for="publicProfile">Public profile</label>
+                                    </div>
+                                    <div class="form-check form-switch mb-3">
+                                        <input class="form-check-input" type="checkbox" id="showActivity" name="show_activity" {% if profile.show_activity %}checked{% endif %}>
+                                        <label class="form-check-label text-white" for="showActivity">Show my activity</label>
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">Save Privacy Settings</button>
+                            </form>
+                        </div>
+                        
+                        <!-- Security Tab -->
+                        <div class="tab-pane fade" id="security" role="tabpanel" aria-labelledby="security-tab">
+                            <h3 class="mb-4 text-white">Security Settings</h3>
+                            <div class="mb-4">
+                                <h5 class="mb-3 text-white">Password</h5>
+                                <p class="text-white">Change your password to keep your account secure.</p>
+                                <a href="{% url 'core:change_password' %}" class="btn btn-primary">
+                                    <i class="fas fa-key me-2"></i>Change Password
+                                </a>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <h5 class="mb-3 text-white">Account Activity</h5>
+                                <p class="text-white">Review your recent account activity.</p>
+                                <div class="card bg-dark border-secondary">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span class="text-white">Last login</span>
+                                            <span class="text-white">{{ user.last_login|date:"M d, Y H:i" }}</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span class="text-white">Account created</span>
+                                            <span class="text-white">{{ user.date_joined|date:"M d, Y" }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .nav-pills .nav-link {
+        color: var(--text-color);
+        border-radius: 8px;
+        padding: 10px 15px;
+    }
+    
+    .nav-pills .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .nav-pills .nav-link.active {
+        background-color: var(--primary-color);
+        color: white;
+    }
+    
+    .form-check-input {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .form-check-input:checked {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+    
+    .form-select {
+        background-color: var(--card-bg);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(66, 135, 245, 0.25);
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Preserve active tab after form submission
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get the tab from URL hash or localStorage
+        const urlHash = window.location.hash;
+        const savedTab = localStorage.getItem('activeSettingsTab');
+        
+        if (urlHash) {
+            // If there's a hash in the URL, activate that tab
+            const tabId = urlHash.substring(1);
+            const tabElement = document.getElementById(tabId + '-tab');
+            if (tabElement) {
+                const tab = new bootstrap.Tab(tabElement);
+                tab.show();
+            }
+        } else if (savedTab) {
+            // Otherwise use the saved tab if available
+            const tabElement = document.getElementById(savedTab + '-tab');
+            if (tabElement) {
+                const tab = new bootstrap.Tab(tabElement);
+                tab.show();
+            }
+        }
+        
+        // Save the active tab when changed
+        const tabElements = document.querySelectorAll('button[data-bs-toggle="pill"]');
+        tabElements.forEach(tabElement => {
+            tabElement.addEventListener('shown.bs.tab', function(event) {
+                const targetId = event.target.getAttribute('data-bs-target').substring(1);
+                localStorage.setItem('activeSettingsTab', targetId);
+            });
+        });
+    });
+</script>
+{% endblock %}

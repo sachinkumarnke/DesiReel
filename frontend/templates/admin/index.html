@@ -1,0 +1,198 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}{{ block.super }}
+<style>
+.quick-actions {
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.quick-action-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 15px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    color: #333;
+    text-decoration: none;
+    transition: all 0.2s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.quick-action-btn:hover {
+    background: #f9f9f9;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.quick-action-btn i {
+    margin-right: 8px;
+    color: #e50914;
+}
+
+.app-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.app-item {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.app-header {
+    background: #e50914;
+    color: #fff;
+    padding: 15px;
+    font-weight: bold;
+}
+
+.model-list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.model-list li {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.model-list li:last-child {
+    border-bottom: none;
+}
+
+.model-list a {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 15px;
+    text-decoration: none;
+    color: #333;
+    transition: background 0.2s;
+}
+
+.model-list a:hover {
+    background: #f9f9f9;
+}
+
+.model-count {
+    background: #f0f0f0;
+    border-radius: 20px;
+    padding: 2px 8px;
+    font-size: 12px;
+    color: #666;
+}
+
+.recent-actions h2 {
+    background: #8b0000;
+    color: #fff;
+    padding: 10px 15px;
+    margin-top: 20px;
+    border-radius: 4px 4px 0 0;
+}
+
+.module.filtered {
+    background: #fff;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block nav-sidebar %}{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <div class="quick-actions">
+        <a href="{% url 'admin:core_movie_add' %}" class="quick-action-btn">
+            <i class="fas fa-film"></i> Add Movie
+        </a>
+        <a href="{% url 'admin:core_category_add' %}" class="quick-action-btn">
+            <i class="fas fa-tags"></i> Add Category
+        </a>
+        <a href="{% url 'admin:core_userprofile_changelist' %}" class="quick-action-btn">
+            <i class="fas fa-users"></i> Manage Users
+        </a>
+        <a href="/admin/" class="quick-action-btn">
+            <i class="fas fa-chart-bar"></i> Analytics
+        </a>
+    </div>
+
+    {% if app_list %}
+    <div class="app-list">
+        {% for app in app_list %}
+        <div class="app-item">
+            <div class="app-header">
+                {{ app.name }}
+            </div>
+            <ul class="model-list">
+                {% for model in app.models %}
+                <li>
+                    {% if model.admin_url %}
+                    <a href="{{ model.admin_url }}">
+                        <span>{{ model.name }}</span>
+                        {% if model.count is not None %}
+                        <span class="model-count">{{ model.count }}</span>
+                        {% endif %}
+                    </a>
+                    {% else %}
+                    <span>{{ model.name }}</span>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>{% translate "You don't have permission to view or edit anything." %}</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block sidebar %}
+<div id="content-related">
+    <div class="recent-actions">
+        <h2>{% translate 'Recent actions' %}</h2>
+        <div class="module filtered">
+            {% load log %}
+            {% get_admin_log 10 as admin_log for_user user %}
+            {% if not admin_log %}
+            <p>{% translate 'None available' %}</p>
+            {% else %}
+            <ul class="actionlist">
+                {% for entry in admin_log %}
+                <li class="{% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}">
+                    {% if entry.is_deletion or not entry.get_admin_url %}
+                    {{ entry.object_repr }}
+                    {% else %}
+                    <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
+                    {% endif %}
+                    <br>
+                    {% if entry.content_type %}
+                    <span class="mini quiet">{% filter capfirst %}{{ entry.content_type.name }}{% endfilter %}</span>
+                    {% else %}
+                    <span class="mini quiet">{% translate 'Unknown content' %}</span>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

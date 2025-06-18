@@ -1,0 +1,784 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Search Results for "{{ query }}" - DesiReel{% endblock %}
+
+{% block content %}
+<!-- Search Header -->
+<section class="search-header">
+    <div class="container">
+        <div class="search-header-content">
+            <h1>Search Results</h1>
+            <p>Found {{ results|length }} results for "{{ query }}"</p>
+        </div>
+    </div>
+</section>
+
+<div class="container py-4">
+    <div class="row">
+        <!-- Filters Sidebar -->
+        <div class="col-lg-3 mb-4">
+            <div class="search-filters">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="m-0">Filters</h4>
+                    {% if selected_type or selected_category %}
+                    <a href="{% url 'core:search' %}?q={{ query }}" class="clear-filters">Clear All</a>
+                    {% endif %}
+                </div>
+                
+                <form action="{% url 'core:search' %}" method="GET" id="searchFilterForm">
+                    <input type="hidden" name="q" value="{{ query }}">
+                    
+                    <div class="filter-section">
+                        <h5 class="filter-heading">Content Type</h5>
+                        <div class="filter-options">
+                            <div class="filter-option">
+                                <input class="filter-radio" type="radio" name="type" id="typeAll" value="" {% if not selected_type %}checked{% endif %}>
+                                <label class="filter-label" for="typeAll">All Content</label>
+                            </div>
+                            <div class="filter-option">
+                                <input class="filter-radio" type="radio" name="type" id="typeMovies" value="movie" {% if selected_type == 'movie' %}checked{% endif %}>
+                                <label class="filter-label" for="typeMovies">Movies</label>
+                            </div>
+                            <div class="filter-option">
+                                <input class="filter-radio" type="radio" name="type" id="typeSeries" value="webseries" {% if selected_type == 'webseries' %}checked{% endif %}>
+                                <label class="filter-label" for="typeSeries">Web Series</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-section">
+                        <h5 class="filter-heading">Categories</h5>
+                        <div class="filter-options">
+                            <div class="filter-option">
+                                <input class="filter-radio" type="radio" name="category" id="categoryAll" value="" {% if not selected_category %}checked{% endif %}>
+                                <label class="filter-label" for="categoryAll">All Categories</label>
+                            </div>
+                            {% for category in categories %}
+                            <div class="filter-option">
+                                <input class="filter-radio" type="radio" name="category" id="category{{ category.id }}" value="{{ category.id }}" {% if selected_category == category.id|stringformat:"i" %}checked{% endif %}>
+                                <label class="filter-label" for="category{{ category.id }}">{{ category.name }}</label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="filter-section">
+                        <h5 class="filter-heading">Sort By</h5>
+                        <div class="filter-options">
+                            <div class="filter-option">
+                                <input class="filter-radio" type="radio" name="sort" id="sortRelevance" value="relevance" {% if not selected_sort or selected_sort == 'relevance' %}checked{% endif %}>
+                                <label class="filter-label" for="sortRelevance">Relevance</label>
+                            </div>
+                            <div class="filter-option">
+                                <input class="filter-radio" type="radio" name="sort" id="sortNewest" value="newest" {% if selected_sort == 'newest' %}checked{% endif %}>
+                                <label class="filter-label" for="sortNewest">Newest First</label>
+                            </div>
+                            <div class="filter-option">
+                                <input class="filter-radio" type="radio" name="sort" id="sortRating" value="rating" {% if selected_sort == 'rating' %}checked{% endif %}>
+                                <label class="filter-label" for="sortRating">Highest Rated</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Search Results -->
+        <div class="col-lg-9">
+            <div class="search-results-header mb-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="results-count">
+                        <span class="results-text">{{ results|length }} Results</span>
+                        {% if selected_type or selected_category %}
+                        <div class="active-filters">
+                            {% if selected_type %}
+                            <span class="filter-tag">
+                                {% if selected_type == 'movie' %}Movies{% else %}Web Series{% endif %}
+                                <a href="{% url 'core:search' %}?q={{ query }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}" class="filter-remove"><i class="fas fa-times"></i></a>
+                            </span>
+                            {% endif %}
+                            
+                            {% if selected_category %}
+                            <span class="filter-tag">
+                                {% for category in categories %}{% if category.id|stringformat:"i" == selected_category %}{{ category.name }}{% endif %}{% endfor %}
+                                <a href="{% url 'core:search' %}?q={{ query }}{% if selected_type %}&type={{ selected_type }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}" class="filter-remove"><i class="fas fa-times"></i></a>
+                            </span>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="view-toggle">
+                        <button class="btn btn-sm btn-outline-light active" id="gridView"><i class="fas fa-th"></i></button>
+                        <button class="btn btn-sm btn-outline-light" id="listView"><i class="fas fa-list"></i></button>
+                    </div>
+                </div>
+            </div>
+            
+            {% if results %}
+            <!-- Grid View -->
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="gridViewContent">
+                {% for item in results %}
+                <div class="col">
+                    <div class="search-card" onclick="window.location.href='{% url 'core:movie_detail' item.id %}'">
+                        <div class="search-card-poster">
+                            {% if item.cover_image %}
+                            <img src="{{ item.cover_image.url }}" alt="{{ item.title }}" loading="lazy">
+                            {% else %}
+                            <div class="no-poster">
+                                <i class="fas fa-film"></i>
+                            </div>
+                            {% endif %}
+                            
+                            {% if item.content_type == 'webseries' %}
+                            <div class="content-badge">Series</div>
+                            {% endif %}
+                            
+                            <div class="rating-badge">
+                                <i class="fas fa-star"></i> {{ item.average_rating|floatformat:1 }}
+                            </div>
+                            
+                            <div class="search-card-overlay">
+                                <div class="search-card-actions">
+                                    <a href="{% url 'core:movie_detail' item.id %}" class="btn-play" onclick="event.stopPropagation()">
+                                        <i class="fas fa-play"></i>
+                                    </a>
+                                    <button class="btn-add add-to-list-btn" data-movie-id="{{ item.id }}" onclick="event.stopPropagation()">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="search-card-info">
+                            <h3 class="search-card-title">{{ item.title }}</h3>
+                            <div class="search-card-meta">
+                                <span class="year">{{ item.release_year }}</span>
+                                <span class="dot">•</span>
+                                <span class="category">{{ item.category.name }}</span>
+                            </div>
+                            <div class="search-card-desc">
+                                {{ item.description|truncatechars:100 }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- List View -->
+            <div class="list-view-content" id="listViewContent" style="display: none;">
+                {% for item in results %}
+                <div class="list-search-card" onclick="window.location.href='{% url 'core:movie_detail' item.id %}'">
+                    <div class="row align-items-center">
+                        <div class="col-md-2 col-4">
+                            <div class="list-search-poster">
+                                {% if item.cover_image %}
+                                <img src="{{ item.cover_image.url }}" alt="{{ item.title }}" loading="lazy">
+                                {% else %}
+                                <div class="no-poster">
+                                    <i class="fas fa-film"></i>
+                                </div>
+                                {% endif %}
+                                
+                                {% if item.content_type == 'webseries' %}
+                                <div class="content-badge">Series</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-8 col-8">
+                            <div class="list-search-info">
+                                <h3 class="list-search-title">{{ item.title }}</h3>
+                                <div class="list-search-meta">
+                                    <span class="year">{{ item.release_year }}</span>
+                                    <span class="dot">•</span>
+                                    <span class="category">{{ item.category.name }}</span>
+                                    <span class="dot">•</span>
+                                    <span class="rating"><i class="fas fa-star"></i> {{ item.average_rating|floatformat:1 }}</span>
+                                </div>
+                                <div class="list-search-desc">
+                                    {{ item.description|truncatechars:200 }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 d-none d-md-block">
+                            <div class="list-search-actions">
+                                <a href="{% url 'core:movie_detail' item.id %}" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-play me-2"></i>Watch
+                                </a>
+                                <button class="btn btn-sm btn-outline-light mt-2 add-to-list-btn" data-movie-id="{{ item.id }}" onclick="event.stopPropagation()">
+                                    <i class="fas fa-plus me-2"></i>Add to List
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="no-results">
+                <i class="fas fa-search fa-4x"></i>
+                <h3>No results found</h3>
+                <p>We couldn't find any content matching "{{ query }}"</p>
+                <div class="no-results-actions">
+                    <a href="{% url 'core:home' %}" class="btn btn-primary">
+                        <i class="fas fa-home me-2"></i>Back to Home
+                    </a>
+                    <a href="#" class="btn btn-outline-light" onclick="document.querySelector('.search-form input').focus(); return false;">
+                        <i class="fas fa-search me-2"></i>Try Another Search
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Search Header */
+    .search-header {
+        background: linear-gradient(135deg, #050C9C 0%, #3572EF 100%);
+        padding: 3rem 0;
+        margin-top: -80px;
+        text-align: center;
+        color: white;
+    }
+    
+    .search-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .search-header p {
+        font-size: 1.1rem;
+        color: #A7E6FF;
+    }
+    
+    /* Filters */
+    .search-filters {
+        background-color: #0A1BB0;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        position: sticky;
+        top: 100px;
+    }
+    
+    .clear-filters {
+        color: #3ABEF9;
+        font-size: 0.85rem;
+        text-decoration: none;
+    }
+    
+    .clear-filters:hover {
+        text-decoration: underline;
+    }
+    
+    .filter-section {
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .filter-section:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+    }
+    
+    .filter-heading {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: white;
+    }
+    
+    .filter-options {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .filter-option {
+        display: flex;
+        align-items: center;
+    }
+    
+    .filter-radio {
+        margin-right: 10px;
+        accent-color: #3ABEF9;
+    }
+    
+    .filter-label {
+        color: #A7E6FF;
+        font-size: 0.9rem;
+        margin-bottom: 0;
+        cursor: pointer;
+    }
+    
+    /* Search Results */
+    .search-results-header {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 15px;
+    }
+    
+    .results-text {
+        color: white;
+        font-weight: 600;
+    }
+    
+    .active-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    
+    .filter-tag {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+    }
+    
+    .filter-remove {
+        color: white;
+        margin-left: 5px;
+        opacity: 0.7;
+    }
+    
+    .filter-remove:hover {
+        opacity: 1;
+    }
+    
+    .view-toggle {
+        display: flex;
+        gap: 5px;
+    }
+    
+    .view-toggle .btn {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+    }
+    
+    .view-toggle .btn.active {
+        background-color: #3ABEF9;
+        color: #050C9C;
+        border-color: #3ABEF9;
+    }
+    
+    /* Search Cards - Grid View */
+    .search-card {
+        background-color: #0A1BB0;
+        border-radius: 8px;
+        overflow: hidden;
+        height: 100%;
+        transition: transform 0.3s, box-shadow 0.3s;
+        cursor: pointer;
+    }
+    
+    .search-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    .search-card-poster {
+        position: relative;
+        padding-top: 150%;
+        overflow: hidden;
+    }
+    
+    .search-card-poster img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s;
+    }
+    
+    .search-card:hover .search-card-poster img {
+        transform: scale(1.05);
+    }
+    
+    .no-poster {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #0A1BB0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .no-poster i {
+        font-size: 3rem;
+        color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .content-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background-color: #3572EF;
+        color: white;
+        padding: 3px 8px;
+        border-radius: 3px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        z-index: 2;
+    }
+    
+    .rating-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: #FFD700;
+        padding: 3px 8px;
+        border-radius: 3px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        z-index: 2;
+    }
+    
+    .search-card-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    
+    .search-card:hover .search-card-overlay {
+        opacity: 1;
+    }
+    
+    .search-card-actions {
+        display: flex;
+        gap: 1rem;
+    }
+    
+    .btn-play, .btn-add {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+    }
+    
+    .btn-play {
+        background-color: #3ABEF9;
+        color: white;
+        border: none;
+    }
+    
+    .btn-add {
+        background-color: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 2px solid white;
+    }
+    
+    .btn-play:hover, .btn-add:hover {
+        transform: scale(1.1);
+    }
+    
+    .search-card-info {
+        padding: 1rem;
+    }
+    
+    .search-card-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: white;
+        margin-bottom: 0.5rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .search-card-meta {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-bottom: 0.5rem;
+        font-size: 0.85rem;
+    }
+    
+    .search-card-meta .year {
+        color: #A7E6FF;
+    }
+    
+    .search-card-meta .dot {
+        color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .search-card-meta .category {
+        color: #A7E6FF;
+    }
+    
+    .search-card-desc {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.7);
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    /* List View */
+    .list-view-content {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .list-search-card {
+        background-color: #0A1BB0;
+        border-radius: 8px;
+        overflow: hidden;
+        padding: 15px;
+        cursor: pointer;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .list-search-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    .list-search-poster {
+        position: relative;
+        padding-top: 150%;
+        overflow: hidden;
+        border-radius: 5px;
+    }
+    
+    .list-search-poster img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .list-search-info {
+        padding: 0 15px;
+    }
+    
+    .list-search-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+    
+    .list-search-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-bottom: 10px;
+        font-size: 0.9rem;
+        align-items: center;
+    }
+    
+    .list-search-meta .year,
+    .list-search-meta .category {
+        color: #A7E6FF;
+    }
+    
+    .list-search-meta .dot {
+        color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .list-search-meta .rating {
+        color: #FFD700;
+    }
+    
+    .list-search-desc {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .list-search-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+    }
+    
+    /* No Results */
+    .no-results {
+        text-align: center;
+        padding: 4rem 0;
+        color: #A7E6FF;
+    }
+    
+    .no-results i {
+        margin-bottom: 1.5rem;
+        color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .no-results h3 {
+        color: white;
+        margin-bottom: 1rem;
+    }
+    
+    .no-results p {
+        margin-bottom: 2rem;
+        color: #A7E6FF;
+    }
+    
+    .no-results-actions {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+    }
+    
+    /* Responsive */
+    @media (max-width: 767px) {
+        .search-header {
+            padding: 2rem 0;
+        }
+        
+        .search-header h1 {
+            font-size: 2rem;
+        }
+        
+        .list-search-info {
+            padding: 10px 0 0 0;
+        }
+        
+        .list-search-title {
+            font-size: 1rem;
+        }
+        
+        .list-search-meta {
+            flex-wrap: wrap;
+        }
+        
+        .list-search-desc {
+            display: none;
+        }
+        
+        .no-results-actions {
+            flex-direction: column;
+            gap: 10px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-submit form when radio buttons change
+        document.querySelectorAll('.filter-radio').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.getElementById('searchFilterForm').submit();
+            });
+        });
+        
+        // Grid/List view toggle
+        const gridViewBtn = document.getElementById('gridView');
+        const listViewBtn = document.getElementById('listView');
+        const gridViewContent = document.getElementById('gridViewContent');
+        const listViewContent = document.getElementById('listViewContent');
+        
+        // Check if there's a saved preference in localStorage
+        const viewPreference = localStorage.getItem('searchViewPreference') || 'grid';
+        
+        // Set initial view based on preference
+        if (viewPreference === 'list') {
+            gridViewContent.style.display = 'none';
+            listViewContent.style.display = 'block';
+            gridViewBtn.classList.remove('active');
+            listViewBtn.classList.add('active');
+        }
+        
+        // Grid view button click
+        gridViewBtn.addEventListener('click', function() {
+            gridViewContent.style.display = 'flex';
+            listViewContent.style.display = 'none';
+            gridViewBtn.classList.add('active');
+            listViewBtn.classList.remove('active');
+            localStorage.setItem('searchViewPreference', 'grid');
+        });
+        
+        // List view button click
+        listViewBtn.addEventListener('click', function() {
+            gridViewContent.style.display = 'none';
+            listViewContent.style.display = 'block';
+            gridViewBtn.classList.remove('active');
+            listViewBtn.classList.add('active');
+            localStorage.setItem('searchViewPreference', 'list');
+        });
+        
+        // Add to watchlist functionality
+        document.querySelectorAll('.add-to-list-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const movieId = this.getAttribute('data-movie-id');
+                
+                fetch(`/add-to-watchlist/${movieId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const icon = this.querySelector('i');
+                    
+                    if (data.status === 'added') {
+                        icon.classList.remove('fa-plus');
+                        icon.classList.add('fa-check');
+                        
+                        // If it's a button with text, update the text too
+                        if (this.innerText.includes('Add to List')) {
+                            this.innerHTML = '<i class="fas fa-check me-2"></i>Added';
+                        }
+                    } else {
+                        icon.classList.remove('fa-check');
+                        icon.classList.add('fa-plus');
+                        
+                        // If it's a button with text, update the text too
+                        if (this.innerText.includes('Added')) {
+                            this.innerHTML = '<i class="fas fa-plus me-2"></i>Add to List';
+                        }
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+    });
+</script>
+{% endblock %}

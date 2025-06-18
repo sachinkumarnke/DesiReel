@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="DesiReel - Watch the latest Indian movies and web series online">
+    <meta name="keywords" content="movies, web series, bollywood, south indian, streaming">
+    <meta name="theme-color" content="#050C9C">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>{% block title %}DesiReel - Indian Movies & Web Series{% endblock %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    {% load static %}
+    <style>
+        :root {
+            --primary-color: #050C9C;
+            --secondary-color: #3572EF;
+            --accent-color: #3ABEF9;
+            --light-accent: #A7E6FF;
+            --dark-bg: #050C9C;
+            --darker-bg: #030769;
+            --card-bg: #0A1BB0;
+            --text-color: #ffffff;
+            --text-muted: #A7E6FF;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+        
+        /* Header Styles */
+        .navbar {
+            background-color: rgba(5, 12, 156, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            transition: all 0.3s;
+        }
+        
+        .navbar-brand {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1.8rem;
+            color: var(--text-color);
+        }
+        
+        .navbar-brand span {
+            color: var(--accent-color);
+        }
+        
+        .navbar-nav .nav-link {
+            color: var(--text-color);
+            font-weight: 500;
+            padding: 10px 15px;
+            transition: all 0.3s;
+        }
+        
+        .navbar-nav .nav-link:hover {
+            color: var(--accent-color);
+        }
+        
+        .navbar-nav .nav-link.active {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+        
+        .navbar-toggler {
+            border: none;
+            color: var(--text-color);
+        }
+        
+        .navbar-toggler:focus {
+            box-shadow: none;
+        }
+        
+        .search-form {
+            position: relative;
+        }
+        
+        .search-form .form-control {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 30px;
+            padding: 10px 20px;
+            padding-right: 40px;
+            color: var(--text-color);
+            width: 250px;
+            transition: all 0.3s;
+        }
+        
+        .search-form .form-control:focus {
+            background-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 3px rgba(53, 114, 239, 0.25);
+            width: 300px;
+        }
+        
+        .search-form .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .search-form .btn {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            border: none;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .auth-buttons .btn {
+            margin-left: 10px;
+        }
+        
+        .btn-outline-light:hover {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            color: var(--primary-color);
+        }
+        
+        .btn-danger {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+        
+        .btn-danger:hover {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            color: var(--primary-color);
+        }
+        
+        /* Dropdown Styles */
+        .dropdown-menu {
+            background-color: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .dropdown-item {
+            color: var(--text-color);
+        }
+        
+        .dropdown-item:hover {
+            background-color: rgba(58, 190, 249, 0.1);
+            color: var(--accent-color);
+        }
+        
+        .dropdown-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Section Styles */
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+            color: var(--text-color);
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--accent-color);
+            border-radius: 3px;
+        }
+        
+        /* Footer Styles */
+        .footer {
+            background-color: var(--darker-bg);
+            padding: 60px 0 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--accent-color), transparent);
+        }
+        
+        .footer-logo {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1.8rem;
+            color: var(--text-color);
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .footer-logo span {
+            color: var(--accent-color);
+        }
+        
+        .footer-text {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .footer-social {
+            margin-bottom: 30px;
+        }
+        
+        .footer-social a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: var(--text-color);
+            margin-right: 10px;
+            transition: all 0.3s;
+        }
+        
+        .footer-social a:hover {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            transform: translateY(-5px);
+        }
+        
+        .footer-heading {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--text-color);
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-heading::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background: var(--accent-color);
+        }
+        
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.3s;
+            display: block;
+            font-size: 0.9rem;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent-color);
+            transform: translateX(5px);
+        }
+        
+        .footer-links a i {
+            margin-right: 5px;
+            font-size: 0.8rem;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            margin-top: 40px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        .footer-bottom a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 991.98px) {
+            .navbar-collapse {
+                background-color: var(--darker-bg);
+                padding: 20px;
+                border-radius: 10px;
+                margin-top: 10px;
+            }
+            
+            .search-form {
+                margin: 10px 0;
+            }
+            
+            .search-form .form-control {
+                width: 100%;
+            }
+            
+            .search-form .form-control:focus {
+                width: 100%;
+            }
+            
+            .auth-buttons {
+                margin-top: 10px;
+                display: flex;
+                justify-content: space-between;
+            }
+            
+            .auth-buttons .btn {
+                margin: 0;
+                flex: 1;
+            }
+            
+            .auth-buttons .btn:first-child {
+                margin-right: 10px;
+            }
+        }
+        
+        @media (max-width: 767.98px) {
+            .footer {
+                text-align: center;
+            }
+            
+            .footer-heading::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            
+            .footer-links a:hover {
+                transform: none;
+            }
+            
+            .footer-social {
+                display: flex;
+                justify-content: center;
+            }
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="navbar navbar-expand-lg fixed-top">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'core:home' %}">Desi<span>Reel</span></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'core:home' %}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if 'movie' in request.path %}active{% endif %}" href="{% url 'core:content_type' 'movie' %}">Movies</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if 'webseries' in request.path %}active{% endif %}" href="{% url 'core:content_type' 'webseries' %}">Web Series</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="genresDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Genres
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="genresDropdown">
+                                <li><a class="dropdown-item" href="{% url 'core:category_name' 'Action' %}">Action</a></li>
+                                <li><a class="dropdown-item" href="{% url 'core:category_name' 'Comedy' %}">Comedy</a></li>
+                                <li><a class="dropdown-item" href="{% url 'core:category_name' 'Drama' %}">Drama</a></li>
+                                <li><a class="dropdown-item" href="{% url 'core:category_name' 'Romance' %}">Romance</a></li>
+                                <li><a class="dropdown-item" href="{% url 'core:category_name' 'Thriller' %}">Thriller</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'core:all_categories' %}">All Categories</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if 'new_releases' in request.path %}active{% endif %}" href="{% url 'core:new_releases' %}">New Releases</a>
+                        </li>
+                    </ul>
+                    <form class="search-form d-flex" action="{% url 'core:search' %}" method="get">
+                        <input class="form-control" type="search" placeholder="Search movies, series..." name="q" aria-label="Search">
+                        <button class="btn" type="submit"><i class="fas fa-search"></i></button>
+                    </form>
+                    
+                    <!-- Auth Buttons -->
+                    <div class="auth-buttons">
+                        {% if user.is_authenticated %}
+                            <div class="dropdown">
+                                <button class="btn btn-outline-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user-circle me-2"></i>{{ user.username }}
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                                    <li><a class="dropdown-item" href="{% url 'core:profile' %}"><i class="fas fa-user me-2"></i>Profile</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'core:watchlist' %}"><i class="fas fa-list me-2"></i>My Watchlist</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'core:update_settings' %}"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                                    {% if user.is_superuser %}
+                                    <li><a class="dropdown-item" href="/admin/"><i class="fas fa-lock me-2"></i>Admin Panel</a></li>
+                                    {% endif %}
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{% url 'core:logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                                </ul>
+                            </div>
+                        {% else %}
+                            <a href="{% url 'core:login' %}" class="btn btn-outline-light">Login</a>
+                            <a href="{% url 'core:register' %}" class="btn btn-danger">Register</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <!-- Main Content -->
+    <main style="padding-top: 80px;">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <a href="{% url 'core:home' %}" class="footer-logo">Desi<span>Reel</span></a>
+                    <p class="footer-text">Your ultimate destination for Indian movies and web series. Watch the latest Bollywood, South Indian, and regional content.</p>
+                    <div class="footer-social">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2 mb-4 mb-lg-0">
+                    <h4 class="footer-heading">Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'core:home' %}"><i class="fas fa-angle-right"></i> Home</a></li>
+                        <li><a href="{% url 'core:content_type' 'movie' %}"><i class="fas fa-angle-right"></i> Movies</a></li>
+                        <li><a href="{% url 'core:content_type' 'webseries' %}"><i class="fas fa-angle-right"></i> Web Series</a></li>
+                        <li><a href="{% url 'core:all_categories' %}"><i class="fas fa-angle-right"></i> Categories</a></li>
+                        <li><a href="{% url 'core:new_releases' %}"><i class="fas fa-angle-right"></i> New Releases</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-lg-2 mb-4 mb-lg-0">
+                    <h4 class="footer-heading">Genres</h4>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'core:category_name' 'Action' %}"><i class="fas fa-angle-right"></i> Action</a></li>
+                        <li><a href="{% url 'core:category_name' 'Comedy' %}"><i class="fas fa-angle-right"></i> Comedy</a></li>
+                        <li><a href="{% url 'core:category_name' 'Drama' %}"><i class="fas fa-angle-right"></i> Drama</a></li>
+                        <li><a href="{% url 'core:category_name' 'Romance' %}"><i class="fas fa-angle-right"></i> Romance</a></li>
+                        <li><a href="{% url 'core:category_name' 'Thriller' %}"><i class="fas fa-angle-right"></i> Thriller</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <h4 class="footer-heading">Contact Us</h4>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-envelope"></i> support@desireel.com</a></li>
+                        <li><a href="#"><i class="fas fa-phone"></i> +91 123 456 7890</a></li>
+                        <li><a href="#"><i class="fas fa-map-marker-alt"></i> Mumbai, Maharashtra, India</a></li>
+                    </ul>
+                    <h4 class="footer-heading mt-4">Download Our App</h4>
+                    <div class="d-flex flex-wrap">
+                        <a href="{% url 'core:ios_app' %}" class="me-2 mb-2"><img src="https://via.placeholder.com/120x40" alt="App Store"></a>
+                        <a href="{% url 'core:android_app' %}"><img src="https://via.placeholder.com/120x40" alt="Google Play"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 DesiReel. All Rights Reserved. | <a href="{% url 'core:terms' %}">Terms of Service</a> | <a href="{% url 'core:privacy' %}">Privacy Policy</a></p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.padding = '10px 0';
+                navbar.style.backgroundColor = 'rgba(5, 12, 156, 0.98)';
+            } else {
+                navbar.style.padding = '15px 0';
+                navbar.style.backgroundColor = 'rgba(5, 12, 156, 0.95)';
+            }
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,180 @@
+/* Mobile-specific styles for DesiReel */
+
+/* Small screens (phones) */
+@media (max-width: 576px) {
+    /* Navigation */
+    .navbar-brand {
+        font-size: 1.5rem;
+    }
+    
+    .navbar-toggler {
+        padding: 0.25rem 0.5rem;
+    }
+    
+    /* Hero section */
+    .hero-section {
+        text-align: center;
+    }
+    
+    .hero-title {
+        font-size: 1.8rem !important;
+    }
+    
+    .hero-buttons .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+        margin-right: 0 !important;
+    }
+    
+    .social-login-buttons {
+        justify-content: center;
+    }
+    
+    /* Movie cards */
+    .movie-card {
+        margin-bottom: 1rem;
+    }
+    
+    /* Footer */
+    .footer-heading {
+        margin-top: 1.5rem;
+    }
+    
+    /* Forms */
+    .auth-card {
+        padding: 1.5rem;
+    }
+    
+    /* Profile page */
+    .profile-sidebar {
+        margin-bottom: 1.5rem;
+    }
+}
+
+/* Touch devices */
+@media (hover: none) {
+    .movie-poster-overlay {
+        opacity: 1;
+        background: linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(0,0,0,0.7) 100%);
+    }
+    
+    .movie-card:hover {
+        transform: none;
+    }
+    
+    .movie-card:hover .movie-poster img {
+        transform: none;
+    }
+    
+    .footer-links a:hover {
+        transform: none;
+    }
+}
+/* Enhanced Mobile Styles for Content Rows */
+@media (max-width: 767px) {
+    .content-item {
+        width: 150px;
+    }
+    
+    .content-card {
+        height: 220px;
+    }
+    
+    .content-slider {
+        gap: 0.5rem;
+    }
+    
+    .row-title {
+        font-size: 1.2rem;
+    }
+    
+    .content-info-hover {
+        opacity: 1;
+        visibility: visible;
+        background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 70%, transparent 100%);
+    }
+    
+    .content-item:hover {
+        transform: scale(1.05);
+    }
+    
+    .play-button, .add-button {
+        width: 28px;
+        height: 28px;
+    }
+    
+    /* Hero section adjustments */
+    .featured-content {
+        max-width: 100%;
+        padding-top: 30%;
+    }
+    
+    .featured-title {
+        font-size: 2rem;
+    }
+    
+    .featured-description {
+        font-size: 1rem;
+    }
+    
+    .featured-buttons {
+        flex-wrap: wrap;
+    }
+    
+    .featured-buttons .btn {
+        margin-bottom: 10px;
+    }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+    .content-item {
+        width: 130px;
+    }
+    
+    .content-card {
+        height: 190px;
+    }
+    
+    .hover-title {
+        font-size: 0.9rem;
+    }
+    
+    .meta-details {
+        font-size: 0.7rem;
+    }
+    
+    .play-button, .add-button {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .featured-title {
+        font-size: 1.5rem;
+    }
+    
+    .featured-meta {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .featured-year, .featured-rating, .featured-duration {
+        font-size: 0.9rem;
+    }
+    
+    .rank-badge {
+        font-size: 3rem;
+    }
+}
+
+/* Optimize touch interactions for mobile */
+@media (hover: none) and (pointer: coarse) {
+    .content-info-hover {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .content-item:active {
+        transform: scale(1.05);
+    }
+}

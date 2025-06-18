@@ -1,0 +1,234 @@
+{% extends 'core/base.html' %}
+
+{% block title %}My Profile - DesiReel{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Profile Sidebar -->
+        <div class="col-lg-3 mb-4">
+            <div class="card bg-dark border-0">
+                <div class="card-body text-center p-4">
+                    <div class="profile-picture-container mb-3">
+                        {% if profile.profile_picture %}
+                        <img src="{{ profile.profile_picture.url }}" alt="{{ user.username }}" class="profile-picture">
+                        {% else %}
+                        <div class="profile-picture-placeholder">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <h4 class="mb-1">{{ user.username }}</h4>
+                    <p class="text-muted mb-3">Member since {{ user.date_joined|date:"M Y" }}</p>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'core:update_profile' %}" class="btn btn-outline-light">
+                            <i class="fas fa-edit me-2"></i>Edit Profile
+                        </a>
+                        <a href="{% url 'core:update_settings' %}" class="btn btn-outline-light">
+                            <i class="fas fa-cog me-2"></i>Settings
+                        </a>
+                        <!-- Social account connections removed -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card bg-dark border-0 mt-4">
+                <div class="card-body p-4">
+                    <h5 class="card-title mb-3">Account Info</h5>
+                    <div class="mb-3">
+                        <div class="text-muted small">Email</div>
+                        <div>{{ user.email|default:"Not provided" }}</div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="text-muted small">Profile Status</div>
+                        <div>{% if profile.public_profile %}Public{% else %}Private{% endif %}</div>
+                    </div>
+                    <div>
+                        <div class="text-muted small">Password</div>
+                        <div>
+                            <a href="{% url 'core:change_password' %}" class="text-danger">Change Password</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Profile Content -->
+        <div class="col-lg-9">
+            <div class="card bg-dark border-0">
+                <div class="card-body p-4">
+                    <h3 class="mb-4">About Me</h3>
+                    <p>{{ profile.bio|default:"No bio provided yet." }}</p>
+                </div>
+            </div>
+            
+            <div class="card bg-dark border-0 mt-4">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="mb-0">My Watchlist</h3>
+                        <a href="{% url 'core:watchlist' %}" class="btn btn-sm btn-outline-light">
+                            View All
+                        </a>
+                    </div>
+                    
+                    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+                        {% for movie in profile.watchlist.all|slice:":4" %}
+                        <div class="col">
+                            <div class="movie-card">
+                                <a href="{% url 'core:movie_detail' movie.id %}">
+                                    <div class="movie-poster">
+                                        <img src="{{ movie.cover_image.url }}" alt="{{ movie.title }}">
+                                        <div class="movie-poster-overlay">
+                                            <span class="play-icon">
+                                                <i class="fas fa-play"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="movie-info">
+                                        <h5 class="movie-title">{{ movie.title }}</h5>
+                                        <div class="movie-meta">
+                                            <span class="year">{{ movie.release_year }}</span>
+                                            <span class="dot"></span>
+                                            <span class="duration">{{ movie.duration }}</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="col-12">
+                            <div class="text-center py-5">
+                                <i class="fas fa-film fa-3x mb-3 text-muted"></i>
+                                <p class="text-muted">Your watchlist is empty.</p>
+                                <a href="{% url 'core:home' %}" class="btn btn-sm btn-danger">
+                                    Discover Movies
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-picture-container {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 3px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .profile-picture {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .profile-picture-placeholder {
+        width: 100%;
+        height: 100%;
+        background-color: var(--card-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .profile-picture-placeholder i {
+        font-size: 3rem;
+        color: var(--text-muted);
+    }
+    
+    .movie-card {
+        background-color: var(--card-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s;
+    }
+    
+    .movie-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .movie-poster {
+        position: relative;
+        padding-top: 150%;
+        overflow: hidden;
+    }
+    
+    .movie-poster img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .movie-poster-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    
+    .movie-card:hover .movie-poster-overlay {
+        opacity: 1;
+    }
+    
+    .play-icon {
+        width: 50px;
+        height: 50px;
+        background-color: rgba(229, 9, 20, 0.8);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .play-icon i {
+        color: white;
+        font-size: 1.2rem;
+    }
+    
+    .movie-info {
+        padding: 15px;
+    }
+    
+    .movie-title {
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .movie-meta {
+        display: flex;
+        align-items: center;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+    }
+    
+    .dot {
+        width: 3px;
+        height: 3px;
+        background-color: var(--text-muted);
+        border-radius: 50%;
+        margin: 0 5px;
+    }
+</style>
+{% endblock %}

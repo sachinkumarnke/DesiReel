@@ -1,0 +1,157 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Terms of Use - DesiReel{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="content-header mb-4">
+        <h1 class="mb-3">Terms of Use</h1>
+        <p class="lead" style="color: white;">Last updated: June 1, 2024</p>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card bg-dark border-0">
+                <div class="card-body p-4">
+                    <div class="terms-content">
+                        <section class="mb-5">
+                            <h3 class="mb-3">1. Acceptance of Terms</h3>
+                            <p class="text-white">
+                                By accessing or using the DesiReel service, website, and software applications (collectively, the "DesiReel Service"), you agree to be bound by these Terms of Use. If you do not agree to these Terms of Use, please do not use the DesiReel Service.
+                            </p>
+                            <p class="text-white">
+                                We may revise and update these Terms of Use from time to time at our sole discretion. All changes are effective immediately when we post them. Your continued use of the DesiReel Service following the posting of revised Terms of Use means that you accept and agree to the changes.
+                            </p>
+                        </section>
+                        
+                        <section class="mb-5">
+                            <h3 class="mb-3">2. Subscription and Billing</h3>
+                            <p class="text-white">
+                                2.1. <strong>Free Trial.</strong> Your DesiReel membership may start with a free trial. The free trial period lasts for the period specified during signup. Free trial eligibility is determined by DesiReel at its sole discretion and we may limit eligibility to prevent free trial abuse.
+                            </p>
+                            <p class="text-white">
+                                2.2. <strong>Billing.</strong> By starting your DesiReel subscription and providing or designating a payment method, you authorize us to charge you a subscription fee at the then-current rate, and any other charges you may incur in connection with your use of the DesiReel Service.
+                            </p>
+                            <p class="text-white">
+                                2.3. <strong>Recurring Billing.</strong> Your subscription will continue until terminated. You must cancel your subscription before it renews each billing period to avoid billing of the next period's subscription fees to your payment method.
+                            </p>
+                            <p class="text-white">
+                                2.4. <strong>Price Changes.</strong> We reserve the right to adjust pricing for our service or any components thereof in any manner and at any time as we may determine in our sole discretion. Any price changes will take effect following notice to you.
+                            </p>
+                        </section>
+                        
+                        <section class="mb-5">
+                            <h3 class="mb-3">3. DesiReel Service</h3>
+                            <p class="text-white">
+                                3.1. <strong>Content Availability.</strong> The availability of movies and series will change from time to time. The quality of the display of the streaming content may vary from device to device, and may be affected by various factors, such as your location, the bandwidth available, and the speed of your internet connection.
+                            </p>
+                            <p class="text-white">
+                                3.2. <strong>Compatible Devices.</strong> You may access the DesiReel Service through compatible devices. You are responsible for ensuring you have internet access and compatible devices necessary to use the DesiReel Service.
+                            </p>
+                            <p class="text-white">
+                                3.3. <strong>Restrictions on Use.</strong> You agree not to archive, download, reproduce, distribute, modify, display, perform, publish, license, create derivative works from, offer for sale, or use content and information contained on or obtained from or through the DesiReel Service without express written permission from DesiReel.
+                            </p>
+                        </section>
+                        
+                        <section class="mb-5">
+                            <h3 class="mb-3">4. Account Security</h3>
+                            <p class="text-white">
+                                4.1. <strong>Account Responsibility.</strong> You are responsible for all activity that occurs under your account. You agree to keep your password secure and confidential and not to share your account credentials with any third party.
+                            </p>
+                            <p class="text-white">
+                                4.2. <strong>Multiple Streams.</strong> The number of devices on which you may simultaneously watch depends on your subscription plan and is specified in your account settings.
+                            </p>
+                        </section>
+                        
+                        <section class="mb-5">
+                            <h3 class="mb-3">5. Intellectual Property</h3>
+                            <p class="text-white">
+                                All content included in or made available through the DesiReel Service, such as text, graphics, logos, icons, images, audio clips, digital downloads, and data compilations is the property of DesiReel or its content suppliers and is protected by copyright, trademark, and other intellectual property laws.
+                            </p>
+                        </section>
+                        
+                        <section class="mb-5">
+                            <h3 class="mb-3">6. Termination</h3>
+                            <p class="text-white">
+                                We may terminate or restrict your use of our service if you violate these Terms of Use or are engaged in illegal or fraudulent use of the service. Upon termination, your right to use the DesiReel Service will immediately cease.
+                            </p>
+                        </section>
+                        
+                        <section class="mb-5">
+                            <h3 class="mb-3">7. Limitation of Liability</h3>
+                            <p class="text-white">
+                                To the maximum extent permitted by applicable law, in no event shall DesiReel, its affiliates, or their licensors, service providers, employees, agents, officers, or directors be liable for damages of any kind, under any legal theory, arising out of or in connection with your use, or inability to use, the DesiReel Service.
+                            </p>
+                        </section>
+                        
+                        <section>
+                            <h3 class="mb-3">8. Contact Information</h3>
+                            <p class="text-white">
+                                If you have any questions about these Terms of Use, please contact us at legal@desireel.com.
+                            </p>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card bg-dark border-secondary mb-4">
+                <div class="card-header bg-transparent border-secondary">
+                    <h5 class="mb-0" style="color: var(--secondary-color);">Legal Documents</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush bg-transparent">
+                        <li class="list-group-item bg-transparent border-secondary">
+                            <a href="{% url 'core:terms' %}" class="text-white text-decoration-none">
+                                <i class="fas fa-file-contract me-2 text-primary"></i>Terms of Use
+                            </a>
+                        </li>
+                        <li class="list-group-item bg-transparent border-secondary">
+                            <a href="{% url 'core:privacy' %}" class="text-white text-decoration-none">
+                                <i class="fas fa-user-shield me-2 text-primary"></i>Privacy Policy
+                            </a>
+                        </li>
+                        <li class="list-group-item bg-transparent border-secondary">
+                            <a href="{% url 'core:cookies' %}" class="text-white text-decoration-none">
+                                <i class="fas fa-cookie-bite me-2 text-primary"></i>Cookie Policy
+                            </a>
+                        </li>
+                        <li class="list-group-item bg-transparent border-secondary">
+                            <a href="#" class="text-white text-decoration-none">
+                                <i class="fas fa-copyright me-2 text-primary"></i>Copyright Policy
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card bg-dark border-0 p-4" style="background: linear-gradient(135deg, var(--card-bg), rgba(66, 135, 245, 0.2)) !important;">
+                <h5 class="mb-3">Need Help?</h5>
+                <p class="text-white mb-3">If you have any questions about our Terms of Use or other legal matters, please contact our support team.</p>
+                <a href="{% url 'core:contact' %}" class="btn btn-primary">
+                    <i class="fas fa-envelope me-2"></i>Contact Us
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .terms-content h3 {
+        color: var(--secondary-color);
+        margin-bottom: 1rem;
+    }
+    
+    .terms-content p {
+        margin-bottom: 1rem;
+        line-height: 1.7;
+    }
+    
+    .terms-content strong {
+        color: white;
+    }
+</style>
+{% endblock %}

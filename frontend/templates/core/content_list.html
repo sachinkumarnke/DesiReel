@@ -1,0 +1,842 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ type_name|title }}s - DesiReel{% endblock %}
+
+{% block content %}
+<!-- Header Banner -->
+<section class="content-header">
+    <div class="container">
+        <h1>{{ type_name|title }}s</h1>
+        <p>
+            {% if type_name == 'movie' %}
+            Browse our collection of movies from Bollywood and beyond
+            {% else %}
+            Explore our exclusive web series collection
+            {% endif %}
+        </p>
+    </div>
+</section>
+
+<!-- Filter Section -->
+<section class="filter-section">
+    <div class="container">
+        <form id="filterForm" method="get" action="">
+            <div class="row g-3">
+                <div class="col-md-3 col-6">
+                    <select class="form-select" id="categoryFilter" name="category">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}" {% if request.GET.category == category.id|stringformat:"i" %}selected{% endif %}>{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3 col-6">
+                    <select class="form-select" id="yearFilter" name="year">
+                        <option value="">All Years</option>
+                        {% for year in years %}
+                        <option value="{{ year }}" {% if request.GET.year == year|stringformat:"i" %}selected{% endif %}>{{ year }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3 col-6">
+                    <select class="form-select" id="sortFilter" name="sort">
+                        <option value="newest" {% if request.GET.sort == 'newest' %}selected{% endif %}>Newest First</option>
+                        <option value="oldest" {% if request.GET.sort == 'oldest' %}selected{% endif %}>Oldest First</option>
+                        <option value="rating" {% if request.GET.sort == 'rating' %}selected{% endif %}>Highest Rated</option>
+                        <option value="az" {% if request.GET.sort == 'az' %}selected{% endif %}>A-Z</option>
+                        <option value="za" {% if request.GET.sort == 'za' %}selected{% endif %}>Z-A</option>
+                    </select>
+                </div>
+                <div class="col-md-3 col-6">
+                    <button type="submit" class="btn btn-primary w-100" id="applyFilters">
+                        <i class="fas fa-filter me-2"></i>Apply Filters
+                    </button>
+                </div>
+            </div>
+            <div class="filter-tags mt-3">
+                {% if request.GET.category or request.GET.year or request.GET.sort %}
+                <div class="active-filters">
+                    <span class="filter-label">Active filters:</span>
+                    {% if request.GET.category %}
+                    <span class="filter-tag">
+                        Category: {% for category in categories %}{% if category.id|stringformat:"i" == request.GET.category %}{{ category.name }}{% endif %}{% endfor %}
+                        <a href="?{% for key, value in request.GET.items %}{% if key != 'category' %}{{ key }}={{ value }}&{% endif %}{% endfor %}" class="filter-remove"><i class="fas fa-times"></i></a>
+                    </span>
+                    {% endif %}
+                    {% if request.GET.year %}
+                    <span class="filter-tag">
+                        Year: {{ request.GET.year }}
+                        <a href="?{% for key, value in request.GET.items %}{% if key != 'year' %}{{ key }}={{ value }}&{% endif %}{% endfor %}" class="filter-remove"><i class="fas fa-times"></i></a>
+                    </span>
+                    {% endif %}
+                    {% if request.GET.sort %}
+                    <span class="filter-tag">
+                        Sort: {{ request.GET.sort|title }}
+                        <a href="?{% for key, value in request.GET.items %}{% if key != 'sort' %}{{ key }}={{ value }}&{% endif %}{% endfor %}" class="filter-remove"><i class="fas fa-times"></i></a>
+                    </span>
+                    {% endif %}
+                    <a href="?type={{ type_name }}" class="clear-all">Clear All</a>
+                </div>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</section>
+
+<!-- Movies Grid -->
+<section class="movies-section">
+    <div class="container">
+        {% if page_obj %}
+        <div class="content-header-info mb-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="section-title mb-0">{{ page_obj.paginator.count }} {{ type_name|title }}s Found</h2>
+                <div class="view-toggle">
+                    <button class="btn btn-sm btn-outline-light active" id="gridView"><i class="fas fa-th"></i></button>
+                    <button class="btn btn-sm btn-outline-light" id="listView"><i class="fas fa-list"></i></button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4" id="gridViewContent">
+            {% for movie in page_obj %}
+            <div class="col">
+                <div class="movie-card" onclick="window.location.href='{% url 'core:movie_detail' movie.id %}'">
+                    <div class="movie-poster">
+                        {% if movie.cover_image %}
+                        <img src="{{ movie.cover_image.url }}" alt="{{ movie.title }}" loading="lazy">
+                        {% else %}
+                        <div class="no-poster">
+                            <i class="fas fa-film"></i>
+                        </div>
+                        {% endif %}
+                        
+                        {% if movie.content_type == 'webseries' %}
+                        <div class="movie-badge">Series</div>
+                        {% endif %}
+                        
+                        <div class="movie-overlay">
+                            <div class="movie-actions">
+                                <a href="{% url 'core:movie_detail' movie.id %}" class="btn-play" onclick="event.stopPropagation();">
+                                    <i class="fas fa-play"></i>
+                                </a>
+                                <button class="btn-add add-to-list-btn" data-movie-id="{{ movie.id }}" onclick="event.stopPropagation();">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-info">
+                        <h3 class="movie-title">{{ movie.title }}</h3>
+                        <div class="movie-meta">
+                            <span class="movie-year">{{ movie.release_year }}</span>
+                            <span class="movie-rating"><i class="fas fa-star"></i> {{ movie.average_rating|floatformat:1 }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="list-view-content" id="listViewContent" style="display: none;">
+            {% for movie in page_obj %}
+            <div class="list-movie-card" onclick="window.location.href='{% url 'core:movie_detail' movie.id %}'">
+                <div class="row align-items-center">
+                    <div class="col-md-2 col-4">
+                        <div class="list-movie-poster">
+                            {% if movie.cover_image %}
+                            <img src="{{ movie.cover_image.url }}" alt="{{ movie.title }}" loading="lazy">
+                            {% else %}
+                            <div class="no-poster">
+                                <i class="fas fa-film"></i>
+                            </div>
+                            {% endif %}
+                            
+                            {% if movie.content_type == 'webseries' %}
+                            <div class="movie-badge">Series</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-8 col-8">
+                        <div class="list-movie-info">
+                            <h3 class="list-movie-title">{{ movie.title }}</h3>
+                            <div class="list-movie-meta">
+                                <span class="movie-year">{{ movie.release_year }}</span>
+                                <span class="movie-rating"><i class="fas fa-star"></i> {{ movie.average_rating|floatformat:1 }}</span>
+                                {% if movie.category %}
+                                <span class="movie-category">{{ movie.category.name }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="list-movie-desc">
+                                {{ movie.description|truncatechars:150 }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2 d-none d-md-block">
+                        <div class="list-movie-actions">
+                            <a href="{% url 'core:movie_detail' movie.id %}" class="btn btn-sm btn-primary">
+                                <i class="fas fa-play me-2"></i>Watch
+                            </a>
+                            <button class="btn btn-sm btn-outline-light mt-2 add-to-list-btn" data-movie-id="{{ movie.id }}" onclick="event.stopPropagation();">
+                                <i class="fas fa-plus me-2"></i>Add to List
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <div class="pagination-container">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.year %}&year={{ request.GET.year }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}"><i class="fas fa-angle-double-left"></i></a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.year %}&year={{ request.GET.year }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}"><i class="fas fa-angle-left"></i></a>
+                </li>
+                {% endif %}
+                
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                    <li class="page-item active"><a class="page-link" href="?page={{ num }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.year %}&year={{ request.GET.year }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">{{ num }}</a></li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item"><a class="page-link" href="?page={{ num }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.year %}&year={{ request.GET.year }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">{{ num }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.year %}&year={{ request.GET.year }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}"><i class="fas fa-angle-right"></i></a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.year %}&year={{ request.GET.year }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}"><i class="fas fa-angle-double-right"></i></a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+        {% endif %}
+        
+        {% else %}
+        <div class="no-content">
+            <i class="fas fa-film fa-4x"></i>
+            <h3>No {{ type_name }}s found</h3>
+            <p>We couldn't find any {{ type_name }}s matching your criteria</p>
+            <a href="{% url 'core:home' %}" class="btn btn-primary">
+                <i class="fas fa-home me-2"></i>Back to Home
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Header Section */
+    .content-header {
+        background: linear-gradient(135deg, #050C9C 0%, #3572EF 100%);
+        padding: 4rem 0 2rem;
+        margin-top: -80px;
+        text-align: center;
+        color: white;
+    }
+    
+    .content-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    
+    .content-header p {
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+        color: #A7E6FF;
+    }
+    
+    /* Filter Section */
+    .filter-section {
+        background-color: #030769;
+        padding: 1.5rem 0;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .form-select {
+        background-color: #0A1BB0;
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        height: 45px;
+    }
+    
+    .form-select:focus {
+        background-color: #0A1BB0;
+        color: white;
+        border-color: #3ABEF9;
+        box-shadow: 0 0 0 0.25rem rgba(58, 190, 249, 0.25);
+    }
+    
+    .btn-primary {
+        background-color: #3572EF;
+        border-color: #3572EF;
+    }
+    
+    .btn-primary:hover {
+        background-color: #3ABEF9;
+        border-color: #3ABEF9;
+        color: #050C9C;
+    }
+    
+    .filter-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .active-filters {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .filter-label {
+        color: #A7E6FF;
+        font-size: 0.9rem;
+    }
+    
+    .filter-tag {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+    }
+    
+    .filter-remove {
+        color: white;
+        margin-left: 5px;
+        opacity: 0.7;
+    }
+    
+    .filter-remove:hover {
+        opacity: 1;
+    }
+    
+    .clear-all {
+        color: #3ABEF9;
+        font-size: 0.85rem;
+        text-decoration: none;
+    }
+    
+    .clear-all:hover {
+        text-decoration: underline;
+    }
+    
+    /* Movies Section */
+    .movies-section {
+        padding: 3rem 0;
+        background-color: #050C9C;
+    }
+    
+    .content-header-info {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 15px;
+    }
+    
+    .view-toggle {
+        display: flex;
+        gap: 5px;
+    }
+    
+    .view-toggle .btn {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+    }
+    
+    .view-toggle .btn.active {
+        background-color: #3ABEF9;
+        color: #050C9C;
+        border-color: #3ABEF9;
+    }
+    
+    .movie-card {
+        background-color: #0A1BB0;
+        border-radius: 8px;
+        overflow: hidden;
+        height: 100%;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .movie-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    .movie-poster {
+        position: relative;
+        padding-top: 150%;
+        overflow: hidden;
+    }
+    
+    .movie-poster img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s;
+    }
+    
+    .movie-card:hover .movie-poster img {
+        transform: scale(1.05);
+    }
+    
+    .no-poster {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #0A1BB0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .no-poster i {
+        font-size: 3rem;
+        color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .movie-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background-color: #3572EF;
+        color: white;
+        padding: 3px 8px;
+        border-radius: 3px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        z-index: 2;
+    }
+    
+    .movie-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    
+    .movie-card:hover .movie-overlay {
+        opacity: 1;
+    }
+    
+    .movie-actions {
+        display: flex;
+        gap: 1rem;
+    }
+    
+    .btn-play, .btn-add {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+    }
+    
+    .btn-play {
+        background-color: #3ABEF9;
+        color: white;
+        border: none;
+    }
+    
+    .btn-add {
+        background-color: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 2px solid white;
+    }
+    
+    .btn-play:hover, .btn-add:hover {
+        transform: scale(1.1);
+    }
+    
+    .movie-info {
+        padding: 1rem;
+    }
+    
+    .movie-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: white;
+        margin-bottom: 0.5rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .movie-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.9rem;
+    }
+    
+    .movie-year {
+        color: var(--text-muted);
+    }
+    
+    .movie-rating {
+        color: #ffc107;
+    }
+    
+    /* List View Styles */
+    .list-view-content {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .list-movie-card {
+        background-color: #0A1BB0;
+        border-radius: 8px;
+        overflow: hidden;
+        padding: 15px;
+        cursor: pointer;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .list-movie-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    .list-movie-poster {
+        position: relative;
+        padding-top: 150%;
+        overflow: hidden;
+        border-radius: 5px;
+    }
+    
+    .list-movie-poster img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .list-movie-info {
+        padding: 0 15px;
+    }
+    
+    .list-movie-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+    
+    .list-movie-meta {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 10px;
+        font-size: 0.9rem;
+    }
+    
+    .list-movie-desc {
+        color: #A7E6FF;
+        font-size: 0.9rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .list-movie-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+    }
+    
+    .movie-category {
+        background-color: rgba(255, 255, 255, 0.1);
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 0.8rem;
+    }
+    
+    @media (max-width: 767px) {
+        .list-movie-info {
+            padding: 10px 0 0 0;
+        }
+        
+        .list-movie-title {
+            font-size: 1rem;
+        }
+        
+        .list-movie-meta {
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .list-movie-desc {
+            display: none;
+        }
+    }
+    
+    /* Additional overlay styles */
+    .movie-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    
+    .movie-card:hover .movie-overlay {
+        opacity: 1;
+    }
+    
+    .movie-actions {
+        display: flex;
+        gap: 1rem;
+    }
+    
+    .btn-play, .btn-add {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+    }
+    
+    .btn-play {
+        background-color: #3ABEF9;
+        color: #050C9C;
+        border: none;
+    }
+    
+    .btn-add {
+        background-color: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 2px solid white;
+    }
+    
+    .btn-play:hover, .btn-add:hover {
+        transform: scale(1.1);
+    }
+    
+    .movie-info {
+        padding: 1rem;
+    }
+    
+    .movie-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: white;
+        margin-bottom: 0.5rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .movie-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.9rem;
+    }
+    
+    .movie-year {
+        color: #A7E6FF;
+    }
+    
+    .movie-rating {
+        color: #ffc107;
+    }
+    
+    /* Pagination */
+    .pagination-container {
+        margin-top: 3rem;
+        display: flex;
+        justify-content: center;
+    }
+    
+    .pagination {
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .page-item .page-link {
+        background-color: #0A1BB0;
+        border-color: rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+    
+    .page-item .page-link:hover {
+        background-color: #3ABEF9;
+        border-color: #3ABEF9;
+        color: #050C9C;
+    }
+    
+    .page-item.active .page-link {
+        background-color: #3572EF;
+        border-color: #3572EF;
+    }
+    
+    /* No Content */
+    .no-content {
+        text-align: center;
+        padding: 4rem 0;
+        color: #A7E6FF;
+    }
+    
+    .no-content i {
+        margin-bottom: 1.5rem;
+    }
+    
+    .no-content h3 {
+        color: white;
+        margin-bottom: 1rem;
+    }
+    
+    .no-content p {
+        margin-bottom: 2rem;
+    }
+    
+    /* Responsive Styles */
+    @media (max-width: 767px) {
+        .content-header {
+            padding: 4rem 0 1.5rem;
+        }
+        
+        .content-header h1 {
+            font-size: 2rem;
+        }
+        
+        .movie-overlay {
+            opacity: 1;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 70%, rgba(0,0,0,0) 100%);
+        }
+        
+        .movie-actions {
+            position: absolute;
+            bottom: 15px;
+            left: 0;
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Grid/List view toggle
+        const gridViewBtn = document.getElementById('gridView');
+        const listViewBtn = document.getElementById('listView');
+        const gridViewContent = document.getElementById('gridViewContent');
+        const listViewContent = document.getElementById('listViewContent');
+        
+        // Check if there's a saved preference in localStorage
+        const viewPreference = localStorage.getItem('viewPreference') || 'grid';
+        
+        // Set initial view based on preference
+        if (viewPreference === 'list') {
+            gridViewContent.style.display = 'none';
+            listViewContent.style.display = 'block';
+            gridViewBtn.classList.remove('active');
+            listViewBtn.classList.add('active');
+        }
+        
+        // Grid view button click
+        gridViewBtn.addEventListener('click', function() {
+            gridViewContent.style.display = 'flex';
+            listViewContent.style.display = 'none';
+            gridViewBtn.classList.add('active');
+            listViewBtn.classList.remove('active');
+            localStorage.setItem('viewPreference', 'grid');
+        });
+        
+        // List view button click
+        listViewBtn.addEventListener('click', function() {
+            gridViewContent.style.display = 'none';
+            listViewContent.style.display = 'block';
+            gridViewBtn.classList.remove('active');
+            listViewBtn.classList.add('active');
+            localStorage.setItem('viewPreference', 'list');
+        });
+        
+        // Add to watchlist functionality
+        document.querySelectorAll('.add-to-list-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const movieId = this.getAttribute('data-movie-id');
+                
+                fetch(`/add-to-watchlist/${movieId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const icon = this.querySelector('i');
+                    
+                    if (data.status === 'added') {
+                        icon.classList.remove('fa-plus');
+                        icon.classList.add('fa-check');
+                        
+                        // If it's a button with text, update the text too
+                        if (this.innerText.includes('Add to List')) {
+                            this.innerHTML = '<i class="fas fa-check me-2"></i>Added';
+                        }
+                    } else {
+                        icon.classList.remove('fa-check');
+                        icon.classList.add('fa-plus');
+                        
+                        // If it's a button with text, update the text too
+                        if (this.innerText.includes('Added')) {
+                            this.innerHTML = '<i class="fas fa-plus me-2"></i>Add to List';
+                        }
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+    });
+</script>
+{% endblock %}

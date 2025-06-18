@@ -1,0 +1,344 @@
+{% extends 'core/base.html' %}
+
+{% block title %}iOS App - DesiReel{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row align-items-center">
+        <div class="col-lg-6 mb-5 mb-lg-0">
+            <div class="app-content">
+                <span class="app-badge mb-3">iOS App</span>
+                <h1 class="app-title mb-4">Watch DesiReel on your iPhone & iPad</h1>
+                <p class="app-description mb-4">
+                    Enjoy your favorite Indian movies and shows on the go with our iOS app. 
+                    Stream content anytime, anywhere, and download for offline viewing.
+                </p>
+                
+                <div class="app-features mb-5">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h5>Download & Watch Offline</h5>
+                            <p>Save your favorite content to watch without internet</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h5>Get Notified</h5>
+                            <p>Receive alerts when new content is available</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h5>Optimized for iOS</h5>
+                            <p>Designed specifically for iPhone and iPad</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="app-download">
+                    <a href="#" class="app-store-btn">
+                        <img src="https://developer.apple.com/app-store/marketing/guidelines/images/badge-download-on-the-app-store.svg" alt="Download on the App Store">
+                    </a>
+                    <div class="qr-code ms-4">
+                        <img src="https://via.placeholder.com/120" alt="QR Code" class="img-fluid">
+                        <p class="mt-2 text-center">Scan to download</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-6">
+            <div class="app-showcase">
+                <img src="https://via.placeholder.com/600x800" alt="DesiReel iOS App" class="img-fluid app-screenshot">
+                <div class="app-screenshot-overlay"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="app-details mt-5 pt-5">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center mb-5">
+                <h2 class="mb-4">App Features</h2>
+                <p class="lead text-white">Experience the best of Indian entertainment with our feature-rich iOS app</p>
+            </div>
+        </div>
+        
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="col">
+                <div class="card bg-dark h-100 border-0">
+                    <div class="card-body p-4">
+                        <div class="app-feature-icon mb-3">
+                            <i class="fas fa-film"></i>
+                        </div>
+                        <h4 class="card-title">Extensive Library</h4>
+                        <p class="card-text text-white">Access thousands of movies and shows from Bollywood, South Indian cinema, and regional content.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col">
+                <div class="card bg-dark h-100 border-0">
+                    <div class="card-body p-4">
+                        <div class="app-feature-icon mb-3">
+                            <i class="fas fa-closed-captioning"></i>
+                        </div>
+                        <h4 class="card-title">Subtitles & Audio</h4>
+                        <p class="card-text text-white">Choose from multiple subtitle options and audio languages for a personalized viewing experience.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col">
+                <div class="card bg-dark h-100 border-0">
+                    <div class="card-body p-4">
+                        <div class="app-feature-icon mb-3">
+                            <i class="fas fa-list"></i>
+                        </div>
+                        <h4 class="card-title">Watchlist</h4>
+                        <p class="card-text text-white">Create and manage your personal watchlist to keep track of content you want to watch later.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col">
+                <div class="card bg-dark h-100 border-0">
+                    <div class="card-body p-4">
+                        <div class="app-feature-icon mb-3">
+                            <i class="fas fa-wifi"></i>
+                        </div>
+                        <h4 class="card-title">Smart Downloads</h4>
+                        <p class="card-text text-white">Automatically download new episodes of your favorite shows when connected to Wi-Fi.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col">
+                <div class="card bg-dark h-100 border-0">
+                    <div class="card-body p-4">
+                        <div class="app-feature-icon mb-3">
+                            <i class="fas fa-user-friends"></i>
+                        </div>
+                        <h4 class="card-title">Multiple Profiles</h4>
+                        <p class="card-text text-white">Create up to 5 profiles for different family members with personalized recommendations.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col">
+                <div class="card bg-dark h-100 border-0">
+                    <div class="card-body p-4">
+                        <div class="app-feature-icon mb-3">
+                            <i class="fas fa-child"></i>
+                        </div>
+                        <h4 class="card-title">Kids Mode</h4>
+                        <p class="card-text text-white">Special profile for children with age-appropriate content and parental controls.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="app-requirements mt-5 pt-4">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h3 class="mb-4">System Requirements</h3>
+                <div class="card bg-dark border-0">
+                    <div class="card-body p-4">
+                        <ul class="list-group list-group-flush bg-transparent">
+                            <li class="list-group-item bg-transparent border-secondary d-flex justify-content-between">
+                                <span>Compatible with</span>
+                                <span style="color: white;">iPhone, iPad, and iPod touch</span>
+                            </li>
+                            <li class="list-group-item bg-transparent border-secondary d-flex justify-content-between">
+                                <span>Requires</span>
+                                <span style="color: white;">iOS 14.0 or later</span>
+                            </li>
+                            <li class="list-group-item bg-transparent border-secondary d-flex justify-content-between">
+                                <span>Languages</span>
+                                <span style="color: white;">English, Hindi, Tamil, Telugu, Malayalam, Kannada</span>
+                            </li>
+                            <li class="list-group-item bg-transparent border-secondary d-flex justify-content-between">
+                                <span>Size</span>
+                                <span style="color: white;">85.6 MB</span>
+                            </li>
+                            <li class="list-group-item bg-transparent border-secondary d-flex justify-content-between">
+                                <span>Age Rating</span>
+                                <span style="color: white;">17+</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="app-cta text-center mt-5 pt-4">
+        <h2 class="mb-4">Ready to start watching?</h2>
+        <p class="lead text-white mb-4">Download the DesiReel app now and enjoy your favorite content on your iOS device</p>
+        <a href="#" class="btn btn-primary btn-lg">
+            <i class="fab fa-apple me-2"></i>Download Now
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .app-badge {
+        display: inline-block;
+        background: rgba(66, 245, 179, 0.2);
+        color: var(--secondary-color);
+        padding: 8px 16px;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+    
+    .app-title {
+        font-size: 3rem;
+        font-weight: 800;
+        background: linear-gradient(to right, #ffffff, var(--secondary-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        line-height: 1.2;
+    }
+    
+    .app-description {
+        font-size: 1.2rem;
+        color: white;
+        line-height: 1.8;
+    }
+    
+    .app-features {
+        margin-top: 2rem;
+    }
+    
+    .feature-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .feature-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        color: white;
+        margin-right: 1rem;
+        flex-shrink: 0;
+    }
+    
+    .feature-text h5 {
+        margin-bottom: 0.2rem;
+        color: white;
+    }
+    
+    .feature-text p {
+        margin-bottom: 0;
+        color: #d9d9d9;
+    }
+    
+    .app-download {
+        display: flex;
+        align-items: center;
+    }
+    
+    .app-store-btn {
+        display: inline-block;
+        transition: all 0.3s;
+    }
+    
+    .app-store-btn:hover {
+        transform: translateY(-5px);
+    }
+    
+    .app-store-btn img {
+        height: 50px;
+    }
+    
+    .qr-code p {
+        color: #d9d9d9;
+        font-size: 0.9rem;
+    }
+    
+    .app-showcase {
+        position: relative;
+        padding: 20px;
+    }
+    
+    .app-screenshot {
+        border-radius: 30px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        position: relative;
+        z-index: 2;
+    }
+    
+    .app-screenshot-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at center, rgba(66, 135, 245, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+        z-index: 1;
+    }
+    
+    .app-feature-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+    }
+    
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s;
+    }
+    
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    }
+    
+    @media (max-width: 992px) {
+        .app-title {
+            font-size: 2.5rem;
+        }
+        
+        .app-download {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .qr-code {
+            margin-top: 1.5rem;
+            margin-left: 0 !important;
+        }
+    }
+</style>
+{% endblock %}

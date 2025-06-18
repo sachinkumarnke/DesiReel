@@ -1,0 +1,197 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Support - DesiReel{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="content-header mb-5">
+        <h1 class="mb-3">Customer Support</h1>
+        <p class="lead" style="color: white;">We're here to help you with any issues you may encounter</p>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="support-options mb-5">
+                <h3 class="mb-4">How can we help you today?</h3>
+                
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    <div class="col">
+                        <div class="card bg-dark h-100 border-0">
+                            <div class="card-body p-4">
+                                <div class="support-icon mb-3">
+                                    <i class="fas fa-comments"></i>
+                                </div>
+                                <h4 class="card-title">Live Chat</h4>
+                                <p class="card-text text-white">Connect with our support team instantly through live chat for immediate assistance.</p>
+                                <button class="btn btn-primary mt-2">
+                                    <i class="fas fa-comment-dots me-2"></i>Start Chat
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col">
+                        <div class="card bg-dark h-100 border-0">
+                            <div class="card-body p-4">
+                                <div class="support-icon mb-3">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <h4 class="card-title">Email Support</h4>
+                                <p class="card-text text-white">Send us an email and we'll get back to you within 24 hours.</p>
+                                <a href="{% url 'core:contact' %}" class="btn btn-primary mt-2">
+                                    <i class="fas fa-envelope me-2"></i>Contact Us
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col">
+                        <div class="card bg-dark h-100 border-0">
+                            <div class="card-body p-4">
+                                <div class="support-icon mb-3">
+                                    <i class="fas fa-phone-alt"></i>
+                                </div>
+                                <h4 class="card-title">Phone Support</h4>
+                                <p class="card-text text-white">Call our customer service line for personalized assistance.</p>
+                                <a href="tel:+918000000000" class="btn btn-primary mt-2">
+                                    <i class="fas fa-phone-alt me-2"></i>+91 8000000000
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col">
+                        <div class="card bg-dark h-100 border-0">
+                            <div class="card-body p-4">
+                                <div class="support-icon mb-3">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                                <h4 class="card-title">Help Center</h4>
+                                <p class="card-text text-white">Browse our knowledge base for tutorials and guides.</p>
+                                <a href="{% url 'core:faq' %}" class="btn btn-primary mt-2">
+                                    <i class="fas fa-book-open me-2"></i>Visit Help Center
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="common-issues mb-5">
+                <h3 class="mb-4">Common Issues</h3>
+                
+                <div class="list-group">
+                    <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-secondary">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Streaming problems</h5>
+                            <small><i class="fas fa-chevron-right"></i></small>
+                        </div>
+                        <p class="mb-1">Troubleshoot buffering, playback issues, and video quality problems.</p>
+                    </a>
+                    
+                    <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-secondary">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Account and billing</h5>
+                            <small><i class="fas fa-chevron-right"></i></small>
+                        </div>
+                        <p class="mb-1">Manage your subscription, payment methods, and billing history.</p>
+                    </a>
+                    
+                    <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-secondary">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Device compatibility</h5>
+                            <small><i class="fas fa-chevron-right"></i></small>
+                        </div>
+                        <p class="mb-1">Learn about supported devices and how to set up DesiReel on different platforms.</p>
+                    </a>
+                    
+                    <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-secondary">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Download issues</h5>
+                            <small><i class="fas fa-chevron-right"></i></small>
+                        </div>
+                        <p class="mb-1">Fix problems with downloading content for offline viewing.</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card bg-dark border-secondary mb-4">
+                <div class="card-header bg-transparent border-secondary">
+                    <h5 class="mb-0" style="color: var(--secondary-color);">Support Hours</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush bg-transparent">
+                        <li class="list-group-item bg-transparent border-secondary d-flex justify-content-between">
+                            <span>Live Chat</span>
+                            <span style="color: white;">24/7</span>
+                        </li>
+                        <li class="list-group-item bg-transparent border-secondary d-flex justify-content-between">
+                            <span>Phone Support</span>
+                            <span style="color: white;">9 AM - 9 PM IST</span>
+                        </li>
+                        <li class="list-group-item bg-transparent border-secondary d-flex justify-content-between">
+                            <span>Email Response</span>
+                            <span style="color: white;">Within 24 hours</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card bg-dark border-secondary mb-4">
+                <div class="card-header bg-transparent border-secondary">
+                    <h5 class="mb-0" style="color: var(--secondary-color);">Quick Links</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'core:faq' %}" class="btn btn-outline-light">
+                            <i class="fas fa-question-circle me-2"></i>FAQs
+                        </a>
+                        <a href="#" class="btn btn-outline-light">
+                            <i class="fas fa-user-cog me-2"></i>Account Settings
+                        </a>
+                        <a href="#" class="btn btn-outline-light">
+                            <i class="fas fa-credit-card me-2"></i>Billing Information
+                        </a>
+                        <a href="#" class="btn btn-outline-light">
+                            <i class="fas fa-lock me-2"></i>Security Settings
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .support-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+    }
+    
+    .card {
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    .list-group-item-action:hover {
+        background-color: var(--primary-color) !important;
+    }
+</style>
+{% endblock %}

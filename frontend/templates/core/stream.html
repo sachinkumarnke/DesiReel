@@ -1,0 +1,553 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ movie.title }} - Stream - DesiReel{% endblock %}
+
+{% block content %}
+<div class="stream-container">
+    <div class="video-player-wrapper">
+        <div class="video-player">
+            <div id="player-container">
+                {% if movie.streaming_content.exists and movie.streaming_content.first.streaming_url %}
+                    {% if "drive.google.com" in movie.streaming_content.first.streaming_url %}
+                        <!-- Google Drive Player -->
+                        <iframe id="drivePlayer" src="{{ movie.streaming_content.first.streaming_url|safe }}" 
+                            width="100%" height="500" frameborder="0" allowfullscreen></iframe>
+                    {% elif "youtube.com" in movie.streaming_content.first.streaming_url or "youtu.be" in movie.streaming_content.first.streaming_url %}
+                        <!-- YouTube Player -->
+                        <iframe id="youtubePlayer" src="{{ movie.streaming_content.first.streaming_url|safe }}" 
+                            width="100%" height="500" frameborder="0" allowfullscreen></iframe>
+                    {% else %}
+                        <!-- Default HTML5 Player -->
+                        <video id="videoPlayer" controls autoplay class="video-js">
+                            <source src="{{ movie.streaming_content.first.streaming_url }}" type="video/mp4">
+                            <source src="{{ movie.streaming_content.first.streaming_url }}" type="video/webm">
+                            <source src="{{ movie.streaming_content.first.streaming_url }}" type="application/x-mpegURL">
+                            Your browser does not support the video tag.
+                        </video>
+                    {% endif %}
+                {% elif movie.video_url %}
+                    {% if "drive.google.com" in movie.video_url %}
+                        <!-- Google Drive Player -->
+                        <iframe id="drivePlayer" src="{{ movie.video_url|safe }}" 
+                            width="100%" height="500" frameborder="0" allowfullscreen></iframe>
+                    {% elif "youtube.com" in movie.video_url or "youtu.be" in movie.video_url %}
+                        <!-- YouTube Player -->
+                        <iframe id="youtubePlayer" src="{{ movie.video_url|safe }}" 
+                            width="100%" height="500" frameborder="0" allowfullscreen></iframe>
+                    {% else %}
+                        <!-- Default HTML5 Player -->
+                        <video id="videoPlayer" controls autoplay class="video-js">
+                            <source src="{{ movie.video_url }}" type="video/mp4">
+                            <source src="{{ movie.video_url }}" type="video/webm">
+                            <source src="{{ movie.video_url }}" type="application/x-mpegURL">
+                            Your browser does not support the video tag.
+                        </video>
+                    {% endif %}
+                {% else %}
+                    <div class="no-video-placeholder">
+                        <i class="fas fa-film"></i>
+                        <p>Video not available</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="video-controls">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h1 class="video-title">{{ movie.title }}</h1>
+                        <div class="video-meta">
+                            <span class="badge bg-primary me-2">{{ movie.content_type|title }}</span>
+                            <span class="badge bg-secondary me-2">{{ movie.category.name }}</span>
+                            <span class="badge bg-info me-2">{{ movie.release_year }}</span>
+                            {% if movie.duration %}
+                            <span class="badge bg-dark me-2"><i class="fas fa-clock me-1"></i>{{ movie.duration }}</span>
+                            {% endif %}
+                            <span class="badge bg-warning"><i class="fas fa-star me-1"></i>{{ movie.average_rating|floatformat:1 }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                        <div class="action-buttons">
+                            <button class="btn btn-outline-light btn-sm me-2" id="addToWatchlist" data-movie-id="{{ movie.id }}">
+                                <i class="fas fa-plus me-1"></i>Add to List
+                            </button>
+                            {% if movie.allow_download and movie.streaming_content.first.download_url %}
+                            <a href="{{ movie.streaming_content.first.download_url }}" class="btn btn-primary btn-sm" download>
+                                <i class="fas fa-download me-1"></i>Download
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container py-4">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="movie-details mb-4">
+                    <h3 class="mb-3">About</h3>
+                    <p>{{ movie.description }}</p>
+                    
+                    <div class="movie-crew mt-4">
+                        {% if movie.director %}
+                        <div class="crew-item">
+                            <span class="crew-label">Director:</span>
+                            <span class="crew-value">{{ movie.director }}</span>
+                        </div>
+                        {% endif %}
+                        
+                        {% if movie.cast %}
+                        <div class="crew-item">
+                            <span class="crew-label">Cast:</span>
+                            <span class="crew-value">{{ movie.cast }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Reviews Section -->
+                <div class="reviews-section mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="mb-0">Reviews</h3>
+                        <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#reviewForm">
+                            <i class="fas fa-pen me-2"></i>Write a Review
+                        </button>
+                    </div>
+                    
+                    <div class="collapse mb-4" id="reviewForm">
+                        <div class="card bg-dark border-0">
+                            <div class="card-body">
+                                <form method="post" action="{% url 'core:add_review' movie.id %}">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label for="reviewContent" class="form-label">Your Review</label>
+                                        <textarea class="form-control bg-dark text-white" id="reviewContent" name="content" rows="3" required></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Rating</label>
+                                        <div class="rating-stars mb-3">
+                                            {% for i in "12345" %}
+                                            <i class="fas fa-star rating-star" data-rating="{{ i }}"></i>
+                                            {% endfor %}
+                                        </div>
+                                        <input type="hidden" name="rating" id="ratingInput" value="5">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Submit Review</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="reviews-list">
+                        {% for review in movie.reviews.all %}
+                        <div class="review-card mb-3">
+                            <div class="review-header">
+                                <div class="review-user">
+                                    <i class="fas fa-user-circle me-2"></i>
+                                    <span>{{ review.user.username }}</span>
+                                </div>
+                                <div class="review-rating">
+                                    {% for i in "12345" %}
+                                    <i class="fas fa-star {% if forloop.counter <= review.rating|default:0 %}text-warning{% else %}text-muted{% endif %}"></i>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="review-content">
+                                <p>{{ review.content }}</p>
+                            </div>
+                            <div class="review-footer">
+                                <span class="review-date">{{ review.created_at|date:"M d, Y" }}</span>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center py-4">
+                            <p>No reviews yet. Be the first to review!</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <!-- Related Content -->
+                <div class="related-content">
+                    <h3 class="mb-3">You May Also Like</h3>
+                    
+                    <div class="related-list">
+                        {% for related in related_movies|slice:":5" %}
+                        <a href="{% url 'core:movie_detail' related.id %}" class="related-item">
+                            <div class="related-poster">
+                                {% if related.cover_image %}
+                                <img src="{{ related.cover_image.url }}" alt="{{ related.title }}">
+                                {% else %}
+                                <div class="no-poster-small">
+                                    <i class="fas fa-film"></i>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="related-info">
+                                <h5>{{ related.title }}</h5>
+                                <div class="related-meta">
+                                    <span>{{ related.release_year }}</span>
+                                    <span><i class="fas fa-star text-warning me-1"></i>{{ related.average_rating|floatformat:1 }}</span>
+                                </div>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stream-container {
+        background-color: var(--dark-bg);
+    }
+    
+    .video-player-wrapper {
+        background-color: #000;
+        position: relative;
+    }
+    
+    .video-player {
+        width: 100%;
+        max-height: 70vh;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    #videoPlayer, #drivePlayer, #youtubePlayer {
+        width: 100%;
+        height: 500px;
+        background-color: #000;
+        min-height: 400px;
+    }
+    
+    .no-video-placeholder {
+        width: 100%;
+        height: 500px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: #111;
+        color: #666;
+    }
+    
+    .no-video-placeholder i {
+        font-size: 5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .no-video-placeholder p {
+        font-size: 1.5rem;
+    }
+    
+    .video-controls {
+        background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.7));
+        padding: 20px 0;
+    }
+    
+    .video-title {
+        color: white;
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .video-meta {
+        margin-bottom: 0;
+    }
+    
+    .movie-details {
+        background-color: var(--card-bg);
+        border-radius: 10px;
+        padding: 25px;
+        margin-bottom: 20px;
+    }
+    
+    .movie-details h3 {
+        color: var(--secondary-color);
+        margin-bottom: 15px;
+    }
+    
+    .movie-details p {
+        color: white;
+        line-height: 1.7;
+    }
+    
+    .movie-crew {
+        margin-top: 20px;
+    }
+    
+    .crew-item {
+        margin-bottom: 10px;
+    }
+    
+    .crew-label {
+        font-weight: 600;
+        color: var(--text-muted);
+        margin-right: 10px;
+    }
+    
+    .crew-value {
+        color: white;
+    }
+    
+    .reviews-section {
+        background-color: var(--card-bg);
+        border-radius: 10px;
+        padding: 25px;
+    }
+    
+    .reviews-section h3 {
+        color: var(--secondary-color);
+    }
+    
+    .review-card {
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    
+    .review-user {
+        display: flex;
+        align-items: center;
+        color: white;
+    }
+    
+    .review-content {
+        color: white;
+        margin-bottom: 10px;
+    }
+    
+    .review-footer {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+    
+    .rating-stars {
+        display: flex;
+        gap: 5px;
+    }
+    
+    .rating-star {
+        color: #6c757d;
+        cursor: pointer;
+        font-size: 1.5rem;
+        transition: all 0.2s;
+    }
+    
+    .rating-star:hover {
+        transform: scale(1.2);
+    }
+    
+    .related-content {
+        background-color: var(--card-bg);
+        border-radius: 10px;
+        padding: 25px;
+    }
+    
+    .related-content h3 {
+        color: var(--secondary-color);
+        margin-bottom: 20px;
+    }
+    
+    .related-item {
+        display: flex;
+        margin-bottom: 15px;
+        text-decoration: none;
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        overflow: hidden;
+        transition: all 0.3s;
+    }
+    
+    .related-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .related-poster {
+        width: 80px;
+        height: 120px;
+        flex-shrink: 0;
+    }
+    
+    .related-poster img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .no-poster-small {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #1a1a2e, #0f1723);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.3);
+    }
+    
+    .no-poster-small i {
+        font-size: 1.5rem;
+    }
+    
+    .related-info {
+        padding: 10px 15px;
+        flex-grow: 1;
+    }
+    
+    .related-info h5 {
+        color: white;
+        font-size: 1rem;
+        margin-bottom: 5px;
+    }
+    
+    .related-meta {
+        display: flex;
+        justify-content: space-between;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize video player
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle HTML5 video player errors
+        const videoPlayer = document.getElementById('videoPlayer');
+        if (videoPlayer) {
+            videoPlayer.addEventListener('error', function(e) {
+                console.error('Video error:', e);
+                // If video fails to load, show error message
+                if (e.target.error && e.target.error.code === 4) {
+                    const playerWrapper = document.getElementById('player-container');
+                    playerWrapper.innerHTML = `
+                        <div class="no-video-placeholder">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>Video could not be loaded</p>
+                            <small>Please check the URL or try another format</small>
+                        </div>
+                    `;
+                }
+            });
+        }
+        
+        // Fix Google Drive embed URLs if needed
+        const drivePlayer = document.getElementById('drivePlayer');
+        if (drivePlayer) {
+            let src = drivePlayer.getAttribute('src');
+            // Convert Google Drive view/share URLs to embed format
+            if (src.includes('drive.google.com/file/d/')) {
+                // Extract file ID
+                const fileIdMatch = src.match(/\/d\/([^\/]+)/);
+                if (fileIdMatch && fileIdMatch[1]) {
+                    const fileId = fileIdMatch[1];
+                    drivePlayer.setAttribute('src', `https://drive.google.com/file/d/${fileId}/preview`);
+                }
+            } else if (src.includes('drive.google.com/open?id=')) {
+                // Extract file ID from open URL
+                const fileIdMatch = src.match(/id=([^&]+)/);
+                if (fileIdMatch && fileIdMatch[1]) {
+                    const fileId = fileIdMatch[1];
+                    drivePlayer.setAttribute('src', `https://drive.google.com/file/d/${fileId}/preview`);
+                }
+            }
+        }
+        
+        // Fix YouTube embed URLs if needed
+        const youtubePlayer = document.getElementById('youtubePlayer');
+        if (youtubePlayer) {
+            let src = youtubePlayer.getAttribute('src');
+            // Convert YouTube watch URLs to embed format
+            if (src.includes('youtube.com/watch?v=')) {
+                // Extract video ID
+                const videoIdMatch = src.match(/v=([^&]+)/);
+                if (videoIdMatch && videoIdMatch[1]) {
+                    const videoId = videoIdMatch[1];
+                    youtubePlayer.setAttribute('src', `https://www.youtube.com/embed/${videoId}`);
+                }
+            } else if (src.includes('youtu.be/')) {
+                // Extract video ID from short URL
+                const videoIdMatch = src.match(/youtu\.be\/([^?&]+)/);
+                if (videoIdMatch && videoIdMatch[1]) {
+                    const videoId = videoIdMatch[1];
+                    youtubePlayer.setAttribute('src', `https://www.youtube.com/embed/${videoId}`);
+                }
+            }
+        }
+    });
+
+    // Rating stars interaction
+    document.querySelectorAll('.rating-star').forEach(star => {
+        star.addEventListener('mouseover', function() {
+            const rating = this.dataset.rating;
+            document.querySelectorAll('.rating-star').forEach(s => {
+                s.style.color = s.dataset.rating <= rating ? '#ffc107' : '#6c757d';
+            });
+        });
+
+        star.addEventListener('mouseout', function() {
+            const currentRating = document.getElementById('ratingInput').value;
+            document.querySelectorAll('.rating-star').forEach(s => {
+                s.style.color = s.dataset.rating <= currentRating ? '#ffc107' : '#6c757d';
+            });
+        });
+
+        star.addEventListener('click', function() {
+            const rating = this.dataset.rating;
+            document.getElementById('ratingInput').value = rating;
+            document.querySelectorAll('.rating-star').forEach(s => {
+                s.style.color = s.dataset.rating <= rating ? '#ffc107' : '#6c757d';
+            });
+        });
+    });
+
+    // Watchlist functionality
+    document.getElementById('addToWatchlist')?.addEventListener('click', function() {
+        const movieId = this.dataset.movieId;
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        
+        fetch(`/add-to-watchlist/${movieId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'Content-Type': 'application/json'
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'added') {
+                this.innerHTML = '<i class="fas fa-check me-1"></i>Added to List';
+                this.classList.remove('btn-outline-light');
+                this.classList.add('btn-success');
+            } else {
+                this.innerHTML = '<i class="fas fa-plus me-1"></i>Add to List';
+                this.classList.remove('btn-success');
+                this.classList.add('btn-outline-light');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+</script>
+{% endblock %}

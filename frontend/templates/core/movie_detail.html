@@ -1,0 +1,707 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ movie.title }} - MovieStream{% endblock %}
+
+{% block content %}
+<!-- Movie Hero Section -->
+<div class="movie-detail-hero" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)), url('{{ movie.cover_image.url }}');">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <!-- Movie Poster -->
+            <div class="col-lg-4 col-md-5 mb-4 mb-md-0">
+                <div class="movie-poster-container">
+                    <img src="{{ movie.cover_image.url }}" class="img-fluid rounded shadow movie-detail-poster" alt="{{ movie.title }}">
+                    {% if movie.trailer_url %}
+                    <a href="{{ movie.trailer_url }}" class="trailer-btn" target="_blank">
+                        <i class="fas fa-play"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Movie Details -->
+            <div class="col-lg-8 col-md-7">
+                <div class="movie-detail-content">
+                    <h1 class="movie-detail-title">{{ movie.title }}</h1>
+                    
+                    <div class="movie-meta mb-4">
+                        <span class="badge bg-danger me-2">{{ movie.category.name }}</span>
+                        <span style="color: white;" class="me-3">{{ movie.release_year }}</span>
+                        {% if movie.duration %}
+                        <span style="color: white;" class="me-3"><i class="fas fa-clock me-1"></i>{{ movie.duration }}</span>
+                        {% endif %}
+                        <span class="text-warning">
+                            <i class="fas fa-star me-1"></i>{{ movie.average_rating|floatformat:1 }}
+                        </span>
+                    </div>
+
+                    <div class="movie-crew mb-4">
+                        {% if movie.director %}
+                        <p class="mb-2"><strong>Director:</strong> <span class="text-light">{{ movie.director }}</span></p>
+                        {% endif %}
+                        
+                        {% if movie.cast %}
+                        <p class="mb-0"><strong>Cast:</strong> <span class="text-light">{{ movie.cast }}</span></p>
+                        {% endif %}
+                    </div>
+
+                    <div class="movie-description mb-4">
+                        <p class="lead">{{ movie.description }}</p>
+                    </div>
+                    
+                    <div class="movie-actions d-flex flex-wrap gap-3">
+                        <a href="{% url 'core:stream_movie' movie.id %}" class="btn btn-danger btn-lg">
+                            <i class="fas fa-play me-2"></i>Watch Now
+                        </a>
+                        <button class="btn btn-outline-light btn-lg" id="addToWatchlist" data-movie-id="{{ movie.id }}">
+                            <i class="fas fa-plus me-2"></i>Add to Watchlist
+                        </button>
+                        {% if movie.allow_download %}
+                        <a href="{% url 'core:download_movie' movie.id %}" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-download me-2"></i>Download
+                        </a>
+                        {% endif %}
+                        {% if movie.share_enabled %}
+                        <button class="btn btn-outline-light btn-lg" id="shareButton">
+                            <i class="fas fa-share-alt me-2"></i>Share
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Tabs Navigation -->
+            <ul class="nav nav-tabs mb-4" id="movieTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="about-tab" data-bs-toggle="tab" data-bs-target="#about" type="button" role="tab">About</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">Reviews</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="related-tab" data-bs-toggle="tab" data-bs-target="#related" type="button" role="tab">Related</button>
+                </li>
+            </ul>
+            
+            <!-- Tabs Content -->
+            <div class="tab-content" id="movieTabsContent">
+                <!-- About Tab -->
+                <div class="tab-pane fade show active" id="about" role="tabpanel" aria-labelledby="about-tab">
+                    <h3 class="mb-4">About the Movie</h3>
+                    <p>{{ movie.description }}</p>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h5 class="mb-3">Details</h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><strong>Release Date:</strong> <span style="color: white;">{{ movie.release_year }}</span></li>
+                                {% if movie.duration %}
+                                <li class="mb-2"><strong>Duration:</strong> <span style="color: white;">{{ movie.duration }}</span></li>
+                                {% endif %}
+                                <li class="mb-2"><strong>Genre:</strong> <span style="color: white;">{{ movie.category.name }}</span></li>
+                                {% if movie.director %}
+                                <li class="mb-2"><strong>Director:</strong> <span style="color: white;">{{ movie.director }}</span></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="mb-3">Rating</h5>
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="display-4 me-3 text-warning">{{ movie.average_rating|floatformat:1 }}</div>
+                                <div>
+                                    <div class="rating-stars-display mb-1">
+                                        {% for i in "12345" %}
+                                        <i class="fas fa-star {% if forloop.counter <= movie.average_rating %}text-warning{% else %}text-muted{% endif %}"></i>
+                                        {% endfor %}
+                                    </div>
+                                    <div style="color: white;">Based on user ratings</div>
+                                </div>
+                            </div>
+                            
+                            <h5 class="mt-4 mb-3">Rate this Movie</h5>
+                            <div class="rating-stars mb-3">
+                                {% for i in "12345" %}
+                                <i class="fas fa-star rating-star" data-rating="{{ i }}" style="cursor: pointer; font-size: 1.5rem; color: #6c757d;"></i>
+                                {% endfor %}
+                            </div>
+                            <form method="post" action="{% url 'core:rate_movie' movie.id %}" class="d-none" id="ratingForm">
+                                {% csrf_token %}
+                                <input type="hidden" name="rating" id="ratingInput">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Reviews Tab -->
+                <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="mb-0">User Reviews</h3>
+                        <button class="btn btn-outline-danger" data-bs-toggle="collapse" data-bs-target="#reviewForm">
+                            <i class="fas fa-pen me-2"></i>Write a Review
+                        </button>
+                    </div>
+                    
+                    <div class="collapse mb-4" id="reviewForm">
+                        <div class="card bg-dark border-secondary">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">Share Your Thoughts</h5>
+                                <form method="post" action="{% url 'core:add_review' movie.id %}">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <textarea name="content" class="form-control bg-dark text-white" rows="3" placeholder="Write your review..."></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-danger">Post Review</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reviews-list">
+                        {% for review in movie.reviews.all %}
+                        <div class="card bg-dark mb-3 review-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="review-avatar me-3">
+                                            <i class="fas fa-user-circle fa-2x"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="card-subtitle mb-1">{{ review.user.username }}</h6>
+                                            <small class="text-muted">{{ review.created_at|date:"M d, Y" }}</small>
+                                        </div>
+                                    </div>
+                                    <div class="text-warning">
+                                        {% for i in "12345" %}
+                                        <i class="fas fa-star {% if forloop.counter <= review.rating|default:0 %}text-warning{% else %}text-muted{% endif %}" style="font-size: 0.8rem;"></i>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <p class="card-text">{{ review.content }}</p>
+                                <div class="d-flex justify-content-end mt-3">
+                                    <button class="btn btn-sm btn-outline-secondary me-2">
+                                        <i class="fas fa-thumbs-up me-1"></i>Helpful
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary">
+                                        <i class="fas fa-flag me-1"></i>Report
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-comments fa-3x mb-3 text-muted"></i>
+                            <p class="lead text-white">No reviews yet. Be the first to review!</p>
+                            <button class="btn btn-outline-danger" data-bs-toggle="collapse" data-bs-target="#reviewForm">
+                                <i class="fas fa-pen me-2"></i>Write a Review
+                            </button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <!-- Related Tab -->
+                <div class="tab-pane fade" id="related" role="tabpanel" aria-labelledby="related-tab">
+                    <h3 class="mb-4">More Like This</h3>
+                    
+                    {% if related_movies %}
+                    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
+                        {% for related in related_movies %}
+                        <div class="col">
+                            <div class="movie-card h-100">
+                                <img src="{{ related.cover_image.url }}" class="movie-poster" alt="{{ related.title }}">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ related.title }}</h5>
+                                    <p class="card-text text-white">{{ related.release_year }}</p>
+                                    <div class="d-flex gap-2">
+                                        <a href="{% url 'core:movie_detail' related.id %}" class="btn btn-danger flex-grow-1">
+                                            <i class="fas fa-play me-1"></i>Watch
+                                        </a>
+                                        <button class="btn btn-outline-light">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-white">No related movies found.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 mt-5 mt-lg-0">
+            <div class="card bg-dark border-secondary mb-4">
+                <div class="card-header bg-transparent border-secondary">
+                    <h5 class="mb-0" style="color: var(--secondary-color);">Movie Information</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush bg-transparent">
+                        <li class="list-group-item bg-transparent border-secondary d-flex justify-content-between">
+                            <span>Release Year</span>
+                            <span style="color: white;">{{ movie.release_year }}</span>
+                        </li>
+                        {% if movie.duration %}
+                        <li class="list-group-item bg-transparent border-secondary d-flex justify-content-between">
+                            <span>Duration</span>
+                            <span style="color: white;">{{ movie.duration }}</span>
+                        </li>
+                        {% endif %}
+                        <li class="list-group-item bg-transparent border-secondary d-flex justify-content-between">
+                            <span>Genre</span>
+                            <span style="color: var(--secondary-color);">{{ movie.category.name }}</span>
+                        </li>
+                        {% if movie.director %}
+                        <li class="list-group-item bg-transparent border-secondary d-flex justify-content-between">
+                            <span>Director</span>
+                            <span style="color: white;">{{ movie.director }}</span>
+                        </li>
+                        {% endif %}
+                        <li class="list-group-item bg-transparent border-secondary d-flex justify-content-between">
+                            <span>Rating</span>
+                            <span class="text-warning">
+                                <i class="fas fa-star me-1"></i>{{ movie.average_rating|floatformat:1 }}
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Recommendations -->
+            <div class="recommendations-section">
+                <h5 class="section-title">Recommended For You</h5>
+                
+                <div class="recommendations-slider">
+                    {% if related_movies %}
+                        {% for related in related_movies|slice:":5" %}
+                        <div class="recommendation-card" onclick="window.location.href='{% url 'core:movie_detail' related.id %}'">
+                            <div class="recommendation-poster">
+                                <img src="{{ related.cover_image.url }}" alt="{{ related.title }}">
+                                <div class="recommendation-overlay">
+                                    <div class="recommendation-actions">
+                                        <a href="{% url 'core:movie_detail' related.id %}" class="btn-play">
+                                            <i class="fas fa-play"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                {% if related.content_type == 'webseries' %}
+                                <div class="recommendation-badge">Series</div>
+                                {% endif %}
+                            </div>
+                            <div class="recommendation-info">
+                                <h6 class="recommendation-title">{{ related.title }}</h6>
+                                <div class="recommendation-meta">
+                                    <span class="recommendation-year">{{ related.release_year }}</span>
+                                    <span class="recommendation-rating"><i class="fas fa-star"></i> {{ related.average_rating|floatformat:1 }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="no-recommendations">
+                            <p>No recommendations available</p>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- More Categories -->
+                <div class="more-categories mt-4">
+                    <h5 class="section-title">Explore More</h5>
+                    <div class="category-chips">
+                        <a href="{% url 'core:category_name' 'Action' %}" class="category-chip">Action</a>
+                        <a href="{% url 'core:category_name' 'Comedy' %}" class="category-chip">Comedy</a>
+                        <a href="{% url 'core:category_name' 'Drama' %}" class="category-chip">Drama</a>
+                        <a href="{% url 'core:category_name' 'Romance' %}" class="category-chip">Romance</a>
+                        <a href="{% url 'core:category_name' 'Thriller' %}" class="category-chip">Thriller</a>
+                        <a href="{% url 'core:all_categories' %}" class="category-chip">More...</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Rating stars interaction
+    document.querySelectorAll('.rating-star').forEach(star => {
+        star.addEventListener('mouseover', function() {
+            const rating = this.dataset.rating;
+            document.querySelectorAll('.rating-star').forEach(s => {
+                s.style.color = s.dataset.rating <= rating ? '#ffc107' : '#6c757d';
+            });
+        });
+
+        star.addEventListener('mouseout', function() {
+            document.querySelectorAll('.rating-star').forEach(s => {
+                s.style.color = '#6c757d';
+            });
+        });
+
+        star.addEventListener('click', function() {
+            const rating = this.dataset.rating;
+            document.getElementById('ratingInput').value = rating;
+            document.getElementById('ratingForm').submit();
+        });
+    });
+
+    // Watchlist functionality
+    document.getElementById('addToWatchlist').addEventListener('click', function() {
+        const movieId = this.dataset.movieId;
+        fetch(`/add-to-watchlist/${movieId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'added') {
+                this.innerHTML = '<i class="fas fa-check me-2"></i>Added to Watchlist';
+                this.classList.remove('btn-outline-light');
+                this.classList.add('btn-success');
+            } else {
+                this.innerHTML = '<i class="fas fa-plus me-2"></i>Add to Watchlist';
+                this.classList.remove('btn-success');
+                this.classList.add('btn-outline-light');
+            }
+        });
+    });
+    
+    // Share functionality
+    document.getElementById('shareButton')?.addEventListener('click', function() {
+        if (navigator.share) {
+            navigator.share({
+                title: '{{ movie.title }}',
+                text: '{{ movie.description|truncatechars:100 }}',
+                url: window.location.href,
+            })
+            .catch((error) => console.log('Error sharing', error));
+        } else {
+            // Fallback for browsers that don't support Web Share API
+            const tempInput = document.createElement('input');
+            tempInput.value = window.location.href;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            
+            alert('Link copied to clipboard!');
+        }
+    });
+    
+    // Initialize tabs
+    document.addEventListener('DOMContentLoaded', function() {
+        const triggerTabList = [].slice.call(document.querySelectorAll('#movieTabs button'));
+        triggerTabList.forEach(function(triggerEl) {
+            const tabTrigger = new bootstrap.Tab(triggerEl);
+            triggerEl.addEventListener('click', function(event) {
+                event.preventDefault();
+                tabTrigger.show();
+            });
+        });
+    });
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .movie-detail-hero {
+        padding: 80px 0;
+        background-size: cover;
+        background-position: center;
+        margin-top: -16px;
+    }
+    
+    .movie-detail-poster {
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        transition: transform 0.3s;
+    }
+    
+    .movie-poster-container {
+        position: relative;
+        overflow: hidden;
+        border-radius: 12px;
+    }
+    
+    .trailer-btn {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80px;
+        height: 80px;
+        background-color: rgba(66, 135, 245, 0.8);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2rem;
+        opacity: 0;
+        transition: all 0.3s;
+        text-decoration: none;
+    }
+    
+    .movie-poster-container:hover .trailer-btn {
+        opacity: 1;
+    }
+    
+    .movie-poster-container:hover .movie-detail-poster {
+        transform: scale(1.03);
+    }
+    
+    .movie-detail-title {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    
+    .movie-meta {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .movie-actions {
+        margin-top: 2rem;
+    }
+    
+    .nav-tabs {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .nav-tabs .nav-link {
+        color: var(--text-muted);
+        border: none;
+        border-bottom: 2px solid transparent;
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        background-color: transparent;
+    }
+    
+    .nav-tabs .nav-link:hover {
+        color: var(--text-color);
+        border-color: transparent;
+    }
+    
+    .nav-tabs .nav-link.active {
+        color: var(--primary-color);
+        background-color: transparent;
+        border-color: transparent;
+        border-bottom: 2px solid var(--primary-color);
+    }
+    
+    .review-card {
+        transition: transform 0.3s;
+    }
+    
+    .review-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .review-avatar {
+        color: var(--text-muted);
+    }
+    
+    .rating-stars-display {
+        font-size: 1.2rem;
+    }
+    
+    /* Recommendations Section */
+    .recommendations-section {
+        margin-top: 2rem;
+    }
+    
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--accent-color);
+        position: relative;
+        padding-bottom: 0.5rem;
+    }
+    
+    .section-title:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 40px;
+        height: 2px;
+        background-color: var(--accent-color);
+    }
+    
+    .recommendations-slider {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 15px;
+        margin-bottom: 2rem;
+    }
+    
+    .recommendation-card {
+        background-color: #0A1BB0;
+        border-radius: 8px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .recommendation-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    .recommendation-poster {
+        position: relative;
+        padding-top: 150%;
+        overflow: hidden;
+    }
+    
+    .recommendation-poster img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s;
+    }
+    
+    .recommendation-card:hover .recommendation-poster img {
+        transform: scale(1.05);
+    }
+    
+    .recommendation-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    
+    .recommendation-card:hover .recommendation-overlay {
+        opacity: 1;
+    }
+    
+    .recommendation-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background-color: #3572EF;
+        color: white;
+        padding: 3px 8px;
+        border-radius: 3px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        z-index: 2;
+    }
+    
+    .recommendation-info {
+        padding: 0.75rem;
+    }
+    
+    .recommendation-title {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: white;
+        margin-bottom: 0.3rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .recommendation-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8rem;
+    }
+    
+    .recommendation-year {
+        color: var(--text-muted);
+    }
+    
+    .recommendation-rating {
+        color: #ffc107;
+    }
+    
+    .btn-play {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #3ABEF9;
+        color: white;
+        border: none;
+        transition: all 0.3s;
+    }
+    
+    .btn-play:hover {
+        transform: scale(1.1);
+    }
+    
+    .no-recommendations {
+        background-color: rgba(255, 255, 255, 0.05);
+        padding: 2rem;
+        text-align: center;
+        border-radius: 8px;
+        color: var(--text-muted);
+    }
+    
+    /* Category Chips */
+    .category-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .category-chip {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+    
+    .category-chip:hover {
+        background-color: var(--accent-color);
+        color: var(--primary-color);
+        transform: translateY(-3px);
+    }
+    
+    @media (max-width: 768px) {
+        .movie-detail-title {
+            font-size: 2rem;
+        }
+        
+        .movie-detail-hero {
+            padding: 40px 0;
+        }
+        
+        .recommendations-slider {
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        }
+    }
+</style>
+{% endblock %}

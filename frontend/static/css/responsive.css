@@ -1,0 +1,271 @@
+/* Responsive CSS for DesiReel */
+
+/* Extra small devices (phones, less than 576px) */
+@media (max-width: 575.98px) {
+    /* General */
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    
+    /* Hero section */
+    .hero-section {
+        padding: 80px 0 40px;
+    }
+    
+    .hero-title {
+        font-size: 2rem;
+        line-height: 1.2;
+    }
+    
+    .hero-description {
+        font-size: 1rem;
+    }
+    
+    .hero-buttons .btn {
+        display: block;
+        width: 100%;
+        margin-right: 0 !important;
+        margin-bottom: 10px;
+    }
+    
+    .social-login-buttons {
+        justify-content: center;
+    }
+    
+    /* Movie cards */
+    .movie-card {
+        margin-bottom: 20px;
+    }
+    
+    /* Forms */
+    .auth-card {
+        padding: 20px;
+    }
+    
+    /* Profile page */
+    .profile-picture-container {
+        width: 100px;
+        height: 100px;
+    }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .hero-section {
+        padding: 100px 0 60px;
+    }
+    
+    .hero-title {
+        font-size: 2.5rem;
+    }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .navbar-collapse {
+        background-color: rgba(15, 23, 35, 0.95);
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 10px;
+    }
+    
+    .search-form {
+        margin: 10px 0;
+        width: 100%;
+    }
+    
+    .auth-buttons {
+        margin-top: 10px;
+    }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .search-form .form-control {
+        width: 180px;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) {
+    .movie-poster-overlay {
+        opacity: 1;
+        background: linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(0,0,0,0.7) 100%);
+    }
+    
+    .movie-card:hover .movie-poster img {
+        transform: none;
+    }
+    
+    .movie-card:hover {
+        transform: none;
+    }
+}
+
+/* Dark mode preference */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --dark-bg: #0a0e17;
+        --card-bg: #141824;
+    }
+}
+
+/* Orientation changes */
+@media screen and (orientation: portrait) {
+    .hero-featured-wrapper {
+        max-height: 400px;
+    }
+}
+
+/* Print styles */
+@media print {
+    header, footer, .no-print {
+        display: none !important;
+    }
+    
+    body {
+        background-color: white !important;
+        color: black !important;
+    }
+    
+    .container {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+/* High-resolution screens */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    /* Optimize images for high-res displays */
+    .movie-poster img {
+        image-rendering: -webkit-optimize-contrast;
+    }
+}
+
+/* Accessibility - reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+/* Mobile-specific optimizations for content rows */
+@media (max-width: 575.98px) {
+    /* Content rows */
+    .content-slider {
+        padding: 0.5rem 0.3rem;
+        gap: 0.5rem;
+    }
+    
+    .content-item {
+        width: 130px;
+    }
+    
+    .content-card {
+        height: 190px;
+    }
+    
+    .content-title {
+        font-size: 0.8rem;
+    }
+    
+    .hover-title {
+        font-size: 0.9rem;
+    }
+    
+    .meta-details {
+        font-size: 0.7rem;
+    }
+    
+    .play-button, .add-button {
+        width: 24px;
+        height: 24px;
+    }
+    
+    /* Hero banner */
+    .hero-banner {
+        height: 60vh;
+    }
+    
+    .featured-content {
+        max-width: 100%;
+        padding-top: 20%;
+    }
+    
+    .featured-title {
+        font-size: 1.8rem;
+    }
+    
+    .featured-description {
+        font-size: 1rem;
+        max-width: 100%;
+    }
+    
+    .featured-buttons {
+        flex-wrap: wrap;
+    }
+    
+    .featured-buttons .btn {
+        margin-bottom: 10px;
+    }
+    
+    /* Newsletter section */
+    .newsletter-form {
+        flex-direction: column;
+    }
+    
+    .newsletter-form .form-control {
+        margin-bottom: 10px;
+    }
+    
+    .newsletter-form .btn {
+        width: 100%;
+    }
+}
+
+/* Landscape mode for phones */
+@media (max-width: 767.98px) and (orientation: landscape) {
+    .hero-banner {
+        height: 100vh;
+    }
+    
+    .featured-content {
+        padding-top: 10%;
+    }
+    
+    .content-slider {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 10px;
+        overflow-x: visible;
+    }
+    
+    .content-item {
+        width: 100%;
+    }
+}
+
+/* Optimize for touch devices */
+@media (hover: none) and (pointer: coarse) {
+    .content-info-hover {
+        opacity: 1;
+        visibility: visible;
+        background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 70%, transparent 100%);
+    }
+    
+    .content-item:hover {
+        transform: scale(1.05);
+    }
+    
+    .content-item:active {
+        transform: scale(1.05);
+    }
+}
+
+/* Optimize for high-density displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .content-poster {
+        image-rendering: -webkit-optimize-contrast;
+    }
+}

@@ -1,0 +1,169 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Privacy Policy - DesiReel{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="content-header mb-4">
+        <h1 class="mb-3">Privacy Policy</h1>
+        <p class="lead" style="color: white;">Last updated: June 1, 2024</p>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card bg-dark border-0">
+                <div class="card-body p-4">
+                    <div class="privacy-content">
+                        <section class="mb-5">
+                            <h3 class="mb-3">1. Introduction</h3>
+                            <p class="text-white">
+                                DesiReel Entertainment Pvt. Ltd. ("DesiReel," "we," "us," or "our") respects your privacy and is committed to protecting your personal data. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our service, website, and software applications (collectively, the "DesiReel Service").
+                            </p>
+                            <p class="text-white">
+                                Please read this Privacy Policy carefully. If you do not agree with the terms of this Privacy Policy, please do not access the DesiReel Service.
+                            </p>
+                        </section>
+                        
+                        <section class="mb-5">
+                            <h3 class="mb-3">2. Information We Collect</h3>
+                            <p class="text-white">
+                                We collect several types of information from and about users of our DesiReel Service, including:
+                            </p>
+                            <ul class="text-white">
+                                <li class="mb-2"><strong>Personal Data:</strong> Name, email address, telephone number, billing information, and payment details.</li>
+                                <li class="mb-2"><strong>Account Information:</strong> Username, password, account settings, and preferences.</li>
+                                <li class="mb-2"><strong>Usage Data:</strong> Information about how you use the DesiReel Service, including viewing history, search queries, and interactions with content.</li>
+                                <li class="mb-2"><strong>Device Information:</strong> Information about the devices you use to access the DesiReel Service, including IP address, device type, operating system, and browser type.</li>
+                                <li class="mb-2"><strong>Location Data:</strong> General location information derived from your IP address.</li>
+                            </ul>
+                        </section>
+                        
+                        <section class="mb-5">
+                            <h3 class="mb-3">3. How We Use Your Information</h3>
+                            <p class="text-white">
+                                We use the information we collect about you for various purposes, including:
+                            </p>
+                            <ul class="text-white">
+                                <li class="mb-2">Providing, maintaining, and improving the DesiReel Service</li>
+                                <li class="mb-2">Processing your subscription and payments</li>
+                                <li class="mb-2">Personalizing your experience and delivering content tailored to your interests</li>
+                                <li class="mb-2">Communicating with you about your account, updates, and promotional offers</li>
+                                <li class="mb-2">Analyzing usage patterns to enhance our service</li>
+                                <li class="mb-2">Detecting, preventing, and addressing technical issues and fraudulent activities</li>
+                                <li class="mb-2">Complying with legal obligations</li>
+                            </ul>
+                        </section>
+                        
+                        <section class="mb-5">
+                            <h3 class="mb-3">4. Disclosure of Your Information</h3>
+                            <p class="text-white">
+                                We may disclose your personal information in the following circumstances:
+                            </p>
+                            <ul class="text-white">
+                                <li class="mb-2"><strong>Service Providers:</strong> We may share your information with third-party vendors who provide services on our behalf.</li>
+                                <li class="mb-2"><strong>Business Transfers:</strong> If we are involved in a merger, acquisition, or sale of assets, your information may be transferred as part of that transaction.</li>
+                                <li class="mb-2"><strong>Legal Requirements:</strong> We may disclose your information to comply with any court order, law, or legal process.</li>
+                                <li class="mb-2"><strong>Protection of Rights:</strong> We may disclose information to protect the rights, property, or safety of DesiReel, our users, or others.</li>
+                            </ul>
+                        </section>
+                        
+                        <section class="mb-5">
+                            <h3 class="mb-3">5. Data Security</h3>
+                            <p class="text-white">
+                                We have implemented appropriate technical and organizational measures to secure your personal data from accidental loss and unauthorized access, use, alteration, and disclosure. However, no method of transmission over the Internet or electronic storage is 100% secure, and we cannot guarantee absolute security.
+                            </p>
+                        </section>
+                        
+                        <section class="mb-5">
+                            <h3 class="mb-3">6. Your Data Protection Rights</h3>
+                            <p class="text-white">
+                                Depending on your location, you may have certain rights regarding your personal data, including:
+                            </p>
+                            <ul class="text-white">
+                                <li class="mb-2">The right to access your personal data</li>
+                                <li class="mb-2">The right to rectify inaccurate personal data</li>
+                                <li class="mb-2">The right to request deletion of your personal data</li>
+                                <li class="mb-2">The right to restrict processing of your personal data</li>
+                                <li class="mb-2">The right to data portability</li>
+                                <li class="mb-2">The right to object to processing of your personal data</li>
+                            </ul>
+                        </section>
+                        
+                        <section class="mb-5">
+                            <h3 class="mb-3">7. Children's Privacy</h3>
+                            <p class="text-white">
+                                The DesiReel Service is not intended for children under the age of 13. We do not knowingly collect personal information from children under 13. If you are a parent or guardian and believe that your child has provided us with personal information, please contact us.
+                            </p>
+                        </section>
+                        
+                        <section>
+                            <h3 class="mb-3">8. Contact Information</h3>
+                            <p class="text-white">
+                                If you have any questions about this Privacy Policy, please contact us at privacy@desireel.com.
+                            </p>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card bg-dark border-secondary mb-4">
+                <div class="card-header bg-transparent border-secondary">
+                    <h5 class="mb-0" style="color: var(--secondary-color);">Legal Documents</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush bg-transparent">
+                        <li class="list-group-item bg-transparent border-secondary">
+                            <a href="{% url 'core:terms' %}" class="text-white text-decoration-none">
+                                <i class="fas fa-file-contract me-2 text-primary"></i>Terms of Use
+                            </a>
+                        </li>
+                        <li class="list-group-item bg-transparent border-secondary">
+                            <a href="{% url 'core:privacy' %}" class="text-white text-decoration-none">
+                                <i class="fas fa-user-shield me-2 text-primary"></i>Privacy Policy
+                            </a>
+                        </li>
+                        <li class="list-group-item bg-transparent border-secondary">
+                            <a href="{% url 'core:cookies' %}" class="text-white text-decoration-none">
+                                <i class="fas fa-cookie-bite me-2 text-primary"></i>Cookie Policy
+                            </a>
+                        </li>
+                        <li class="list-group-item bg-transparent border-secondary">
+                            <a href="#" class="text-white text-decoration-none">
+                                <i class="fas fa-copyright me-2 text-primary"></i>Copyright Policy
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card bg-dark border-0 p-4" style="background: linear-gradient(135deg, var(--card-bg), rgba(66, 135, 245, 0.2)) !important;">
+                <h5 class="mb-3">Your Privacy Matters</h5>
+                <p class="text-white mb-3">We are committed to protecting your personal information and ensuring your experience with DesiReel is safe and secure.</p>
+                <a href="{% url 'core:contact' %}" class="btn btn-primary">
+                    <i class="fas fa-envelope me-2"></i>Contact Privacy Team
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .privacy-content h3 {
+        color: var(--secondary-color);
+        margin-bottom: 1rem;
+    }
+    
+    .privacy-content p, .privacy-content ul {
+        margin-bottom: 1rem;
+        line-height: 1.7;
+    }
+    
+    .privacy-content strong {
+        color: white;
+    }
+</style>
+{% endblock %}

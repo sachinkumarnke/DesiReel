@@ -1,0 +1,51 @@
+{% extends 'core/base.html' %}
+
+{% block title %}User Settings{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2>User Settings</h2>
+    
+    <form method="post" action="{% url 'core:update_settings' %}">
+        {% csrf_token %}
+        
+        <h4 class="mt-4">Preferences</h4>
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="autoplay_videos" name="autoplay_videos" {% if profile.autoplay_videos %}checked{% endif %}>
+            <label class="form-check-label" for="autoplay_videos">Autoplay videos</label>
+        </div>
+        
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="show_subtitles" name="show_subtitles" {% if profile.show_subtitles %}checked{% endif %}>
+            <label class="form-check-label" for="show_subtitles">Show subtitles</label>
+        </div>
+        
+        <div class="mb-3">
+            <label for="default_language" class="form-label">Default Language</label>
+            <select class="form-select" id="default_language" name="default_language">
+                <option value="en" {% if profile.default_language == 'en' %}selected{% endif %}>English</option>
+                <option value="hi" {% if profile.default_language == 'hi' %}selected{% endif %}>Hindi</option>
+            </select>
+        </div>
+        
+        <h4 class="mt-4">Notifications</h4>
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="email_notifications" name="email_notifications" {% if profile.email_notifications %}checked{% endif %}>
+            <label class="form-check-label" for="email_notifications">Email notifications</label>
+        </div>
+        
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="newsletter" name="newsletter" {% if profile.newsletter %}checked{% endif %}>
+            <label class="form-check-label" for="newsletter">Newsletter</label>
+        </div>
+        
+        <h4 class="mt-4">Privacy</h4>
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="public_profile" name="public_profile" {% if profile.public_profile %}checked{% endif %}>
+            <label class="form-check-label" for="public_profile">Public profile</label>
+        </div>
+        
+        <button type="submit" class="btn btn-primary mt-3">Save Settings</button>
+    </form>
+</div>
+{% endblock %}

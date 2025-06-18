@@ -1,0 +1,33 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('DesiReel Admin') }}{% endblock %}
+
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/custom.css' %}">
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('DesiReel Administration') }}</a></h1>
+{% endblock %}
+
+{% block welcome-msg %}
+    <strong>{% firstof user.get_short_name user.get_username %}</strong> | 
+    <span class="user-tools-welcome-msg">Welcome to DesiReel Admin Panel</span>
+{% endblock %}
+
+{% block userlinks %}
+    {% if site_url %}
+        <a href="{{ site_url }}">View Site</a> /
+    {% endif %}
+    {% if user.is_active and user.is_staff %}
+        {% url 'django-admindocs-docroot' as docsroot %}
+        {% if docsroot %}
+            <a href="{{ docsroot }}">Documentation</a> /
+        {% endif %}
+    {% endif %}
+    {% if user.has_usable_password %}
+        <a href="{% url 'admin:password_change' %}">Change password</a> /
+    {% endif %}
+    <a href="{% url 'admin:logout' %}">Log out</a>
+{% endblock %}

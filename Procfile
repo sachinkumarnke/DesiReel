@@ -1,1 +1,0 @@
-web: cd movies && gunicorn movies.wsgi

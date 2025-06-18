@@ -1,0 +1,191 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Frequently Asked Questions - DesiReel{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="content-header mb-5">
+        <h1 class="mb-3">Frequently Asked Questions</h1>
+        <p class="lead" style="color: white;">Find answers to the most common questions about DesiReel</p>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="accordion" id="faqAccordion">
+                <!-- Subscription Questions -->
+                <div class="mb-4">
+                    <h3 class="mb-3">Subscription & Billing</h3>
+                    
+                    <div class="accordion-item bg-dark border-0 mb-3">
+                        <h2 class="accordion-header" id="heading1">
+                            <button class="accordion-button collapsed bg-dark text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="false" aria-controls="collapse1">
+                                How much does DesiReel cost?
+                            </button>
+                        </h2>
+                        <div id="collapse1" class="accordion-collapse collapse" aria-labelledby="heading1" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-white">
+                                DesiReel offers several subscription plans to meet your needs. Our Basic plan starts at ₹199/month, Standard at ₹499/month, and Premium at ₹799/month. Each plan offers different features including video quality, number of screens, and download options.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item bg-dark border-0 mb-3">
+                        <h2 class="accordion-header" id="heading2">
+                            <button class="accordion-button collapsed bg-dark text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
+                                Can I cancel my subscription anytime?
+                            </button>
+                        </h2>
+                        <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="heading2" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-white">
+                                Yes, you can cancel your subscription at any time. Your subscription will remain active until the end of your current billing period. To cancel, go to your Account Settings and select "Cancel Subscription."
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Content Questions -->
+                <div class="mb-4">
+                    <h3 class="mb-3">Content & Streaming</h3>
+                    
+                    <div class="accordion-item bg-dark border-0 mb-3">
+                        <h2 class="accordion-header" id="heading3">
+                            <button class="accordion-button collapsed bg-dark text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
+                                What types of movies and shows are available?
+                            </button>
+                        </h2>
+                        <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="heading3" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-white">
+                                DesiReel offers a wide variety of Indian content including Bollywood movies, South Indian films (Tamil, Telugu, Malayalam, Kannada), regional cinema (Bengali, Marathi, Punjabi), and exclusive web series. We regularly update our library with new releases and classics.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item bg-dark border-0 mb-3">
+                        <h2 class="accordion-header" id="heading4">
+                            <button class="accordion-button collapsed bg-dark text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4">
+                                Can I download movies to watch offline?
+                            </button>
+                        </h2>
+                        <div id="collapse4" class="accordion-collapse collapse" aria-labelledby="heading4" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-white">
+                                Yes, with our Standard and Premium plans, you can download movies and shows to watch offline. Simply look for the download icon on compatible titles and tap it to save the content to your device.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Technical Questions -->
+                <div class="mb-4">
+                    <h3 class="mb-3">Technical Support</h3>
+                    
+                    <div class="accordion-item bg-dark border-0 mb-3">
+                        <h2 class="accordion-header" id="heading5">
+                            <button class="accordion-button collapsed bg-dark text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5" aria-expanded="false" aria-controls="collapse5">
+                                What devices can I use to watch DesiReel?
+                            </button>
+                        </h2>
+                        <div id="collapse5" class="accordion-collapse collapse" aria-labelledby="heading5" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-white">
+                                DesiReel is available on a wide range of devices including smartphones (iOS and Android), tablets, smart TVs, web browsers, and streaming devices like Amazon Fire TV, Roku, and Chromecast.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item bg-dark border-0 mb-3">
+                        <h2 class="accordion-header" id="heading6">
+                            <button class="accordion-button collapsed bg-dark text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapse6" aria-expanded="false" aria-controls="collapse6">
+                                How do I fix streaming issues?
+                            </button>
+                        </h2>
+                        <div id="collapse6" class="accordion-collapse collapse" aria-labelledby="heading6" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-white">
+                                If you're experiencing streaming issues, try these steps:<br>
+                                1. Check your internet connection<br>
+                                2. Restart your device<br>
+                                3. Clear your browser cache or app data<br>
+                                4. Try a different browser or device<br>
+                                5. Contact our support team if the issue persists
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-5">
+                <h3>Still have questions?</h3>
+                <p class="text-white">Contact our support team for personalized assistance.</p>
+                <a href="{% url 'core:contact' %}" class="btn btn-primary">
+                    <i class="fas fa-envelope me-2"></i>Contact Us
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 mt-5 mt-lg-0">
+            <div class="card bg-dark border-secondary mb-4">
+                <div class="card-header bg-transparent border-secondary">
+                    <h5 class="mb-0" style="color: var(--secondary-color);">Popular Topics</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush bg-transparent">
+                        <li class="list-group-item bg-transparent border-secondary">
+                            <a href="#" class="text-white text-decoration-none">
+                                <i class="fas fa-credit-card me-2 text-primary"></i>Billing Issues
+                            </a>
+                        </li>
+                        <li class="list-group-item bg-transparent border-secondary">
+                            <a href="#" class="text-white text-decoration-none">
+                                <i class="fas fa-mobile-alt me-2 text-primary"></i>Mobile App Support
+                            </a>
+                        </li>
+                        <li class="list-group-item bg-transparent border-secondary">
+                            <a href="#" class="text-white text-decoration-none">
+                                <i class="fas fa-tv me-2 text-primary"></i>Smart TV Setup
+                            </a>
+                        </li>
+                        <li class="list-group-item bg-transparent border-secondary">
+                            <a href="#" class="text-white text-decoration-none">
+                                <i class="fas fa-lock me-2 text-primary"></i>Account Security
+                            </a>
+                        </li>
+                        <li class="list-group-item bg-transparent border-secondary">
+                            <a href="#" class="text-white text-decoration-none">
+                                <i class="fas fa-download me-2 text-primary"></i>Download Issues
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="support-contact p-4 rounded" style="background: linear-gradient(135deg, var(--card-bg), rgba(66, 135, 245, 0.2));">
+                <h5 class="mb-3">Need immediate help?</h5>
+                <p class="text-white mb-3">Our support team is available 24/7 to assist you with any issues.</p>
+                <div class="d-grid">
+                    <a href="{% url 'core:support' %}" class="btn btn-outline-light">
+                        <i class="fas fa-headset me-2"></i>Get Support
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .accordion-button:not(.collapsed) {
+        background-color: var(--primary-color) !important;
+        color: white !important;
+    }
+    
+    .accordion-button:focus {
+        box-shadow: none;
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .accordion-item {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}

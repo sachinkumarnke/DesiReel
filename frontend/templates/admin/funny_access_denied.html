@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nice Try! - Admin Access Denied</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #050C9C 0%, #3572EF 100%);
+            text-align: center;
+            padding: 50px 20px;
+            color: #fff;
+            margin: 0;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #0A1BB0;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, #3ABEF9, #FF5E62);
+        }
+        h1 {
+            color: #3ABEF9;
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .emoji-container {
+            font-size: 5rem;
+            margin: 20px 0;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-30px);}
+            60% {transform: translateY(-15px);}
+        }
+        .message {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .back-btn {
+            display: inline-block;
+            background-color: #3572EF;
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            margin-top: 20px;
+            border: none;
+            cursor: pointer;
+        }
+        .back-btn:hover {
+            background-color: #3ABEF9;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .funny-fact {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            font-style: italic;
+        }
+        .user-info {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            position: relative;
+        }
+        .badge {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #FF5E62;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .hacker-joke {
+            margin-top: 30px;
+            font-size: 1.1rem;
+            color: #A7E6FF;
+        }
+        .secret-button {
+            background: none;
+            border: none;
+            color: #0A1BB0;
+            cursor: pointer;
+            font-size: 1.5rem;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+        }
+        .secret-message {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #3ABEF9;
+            color: #050C9C;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+        .attempts {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #A7E6FF;
+        }
+        .progress-container {
+            width: 100%;
+            height: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 5%;
+            background: linear-gradient(to right, #3ABEF9, #FF5E62);
+            border-radius: 10px;
+            transition: width 0.5s;
+        }
+        .movie-quote {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            font-style: italic;
+        }
+        .quote-text {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        .quote-author {
+            font-size: 0.9rem;
+            text-align: right;
+            color: #A7E6FF;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Access Denied!</h1>
+        <div class="emoji-container">
+            <span id="emoji">🛑</span>
+        </div>
+        
+        {% if user.is_authenticated %}
+        <div class="message">
+            Sorry <span style="color: #FF5E62; font-weight: bold;">{{ user.username }}</span>, but only superusers can access the admin area!<br>
+            Regular users don't have the secret password to enter this magical realm.
+        </div>
+        <div class="user-info">
+            <div class="badge">REGULAR USER DETECTED</div>
+            <p>You're logged in as a regular user. The admin area is reserved for the chosen ones (superusers).</p>
+            <p>Your current authorization level: <span style="color: #FF5E62; font-weight: bold;">NOT HIGH ENOUGH</span></p>
+        </div>
+        {% else %}
+        <div class="message">
+            Oops! You need to be logged in as a superuser to access the admin area!<br>
+            This area is more exclusive than a secret Bollywood party.
+        </div>
+        {% endif %}
+        
+        <div class="hacker-joke">
+            <p>Trying to hack your way in? Our security system is watching you...</p>
+            <div class="attempts">Hack attempt progress: 5%</div>
+            <div class="progress-container">
+                <div class="progress-bar"></div>
+            </div>
+        </div>
+        
+        <div class="movie-quote">
+            <p class="quote-text">"With great power comes great responsibility. Unfortunately, you don't have that power."</p>
+            <p class="quote-author">- Admin System (inspired by Spider-Man)</p>
+        </div>
+        
+        <a href="/" class="back-btn"><i class="fas fa-home me-2"></i> Back to Movies</a>
+        <button id="tryAgain" class="back-btn" style="margin-left: 10px;"><i class="fas fa-redo me-2"></i> Try Again</button>
+        
+        <div class="funny-fact">
+            <p><strong>Fun Fact:</strong> Trying to access the admin area without being a superuser is like trying to convince your mom that the movie you're watching just happened to have that inappropriate scene right when she walked in.</p>
+        </div>
+        
+        <div id="secretMessage" class="secret-message">
+            Nice try clicking the secret button! But that doesn't work either. Maybe try watching some movies instead?
+        </div>
+        
+        <button class="secret-button" id="secretButton">.</button>
+    </div>
+    
+    <script>
+        // Emoji rotation
+        const emojis = ['🛑', '🔒', '🚫', '⛔', '🔐', '😅', '🕵️‍♂️', '👮‍♀️'];
+        let currentIndex = 0;
+        
+        setInterval(() => {
+            currentIndex = (currentIndex + 1) % emojis.length;
+            document.getElementById('emoji').textContent = emojis[currentIndex];
+        }, 2000);
+        
+        // Secret button
+        document.getElementById('secretButton').addEventListener('click', function() {
+            document.getElementById('secretMessage').style.display = 'block';
+        });
+        
+        // Try again button
+        document.getElementById('tryAgain').addEventListener('click', function() {
+            const progressBar = document.querySelector('.progress-bar');
+            const attemptsText = document.querySelector('.attempts');
+            
+            // Get current width and increase it
+            let currentWidth = parseInt(progressBar.style.width) || 5;
+            currentWidth += 10;
+            
+            if (currentWidth >= 100) {
+                attemptsText.textContent = 'Hack attempt progress: FAILED! System locked.';
+                progressBar.style.width = '100%';
+                progressBar.style.background = '#FF5E62';
+                this.disabled = true;
+                this.textContent = 'System Locked';
+            } else {
+                progressBar.style.width = currentWidth + '%';
+                attemptsText.textContent = `Hack attempt progress: ${currentWidth}%`;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,463 @@
+{% extends 'core/base.html' %}
+
+{% block title %}New Releases - DesiReel{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="content-header mb-4">
+        <h1 class="mb-2">New Releases</h1>
+        <p class="lead" style="color: white;">Check out our latest movies and shows</p>
+    </div>
+    
+    <!-- Featured New Release -->
+    {% if featured_release %}
+    <div class="featured-release mb-5">
+        <div class="row align-items-center">
+            <div class="col-lg-4 mb-4 mb-lg-0">
+                {% if featured_release.cover_image %}
+                <img src="{{ featured_release.cover_image.url }}" alt="{{ featured_release.title }}" class="img-fluid rounded shadow">
+                {% else %}
+                <div class="no-image-placeholder">
+                    <i class="fas fa-film"></i>
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-lg-8">
+                <div class="featured-content">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="badge bg-danger me-2">Featured</span>
+                        <span class="badge bg-primary me-2">{{ featured_release.content_type|title }}</span>
+                        <span class="text-warning">
+                            <i class="fas fa-star me-1"></i>{{ featured_release.average_rating|floatformat:1 }}
+                        </span>
+                    </div>
+                    <h2 class="mb-3">{{ featured_release.title }}</h2>
+                    <p class="mb-4">{{ featured_release.description|truncatewords:50 }}</p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="{% url 'core:movie_detail' featured_release.id %}" class="btn btn-primary">
+                            <i class="fas fa-play me-2"></i>Watch Now
+                        </a>
+                        <button class="btn btn-outline-light add-to-list-btn" data-movie-id="{{ featured_release.id }}">
+                            <i class="fas fa-plus me-2"></i>Add to Watchlist
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Latest Additions -->
+    {% if latest_additions %}
+    <h3 class="section-title mb-4">Latest Additions</h3>
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-6 g-3 mb-5">
+        {% for movie in latest_additions %}
+        <div class="col">
+            <div class="movie-card-new h-100">
+                <a href="{% url 'core:movie_detail' movie.id %}" class="movie-link">
+                    <div class="movie-poster-wrapper">
+                        {% if movie.cover_image %}
+                        <img src="{{ movie.cover_image.url }}" class="movie-poster-img" alt="{{ movie.title }}">
+                        {% else %}
+                        <div class="no-poster">
+                            <i class="fas fa-film"></i>
+                        </div>
+                        {% endif %}
+                        <div class="movie-info-overlay">
+                            <div class="movie-quick-info">
+                                <span class="movie-year">{{ movie.release_year }}</span>
+                                <span class="movie-rating"><i class="fas fa-star"></i> {{ movie.average_rating|floatformat:1 }}</span>
+                            </div>
+                            <div class="play-button-small">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-title-new">{{ movie.title }}</div>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <!-- New Releases Grid -->
+    {% if new_releases %}
+    <h3 class="section-title mb-4">New Releases</h3>
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
+        {% for movie in new_releases %}
+        <div class="col">
+            <div class="movie-card-new h-100">
+                <a href="{% url 'core:movie_detail' movie.id %}" class="movie-link">
+                    <div class="movie-poster-wrapper">
+                        {% if movie.cover_image %}
+                        <img src="{{ movie.cover_image.url }}" class="movie-poster-img" alt="{{ movie.title }}">
+                        {% else %}
+                        <div class="no-poster">
+                            <i class="fas fa-film"></i>
+                        </div>
+                        {% endif %}
+                        <div class="movie-info-overlay">
+                            <div class="movie-quick-info">
+                                <span class="movie-year">{{ movie.release_year }}</span>
+                                <span class="movie-rating"><i class="fas fa-star"></i> {{ movie.average_rating|floatformat:1 }}</span>
+                            </div>
+                            <div class="play-button-small">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-title-new">{{ movie.title }}</div>
+                    <div class="movie-category">{{ movie.category.name }}</div>
+                </a>
+                <button class="watchlist-btn" data-movie-id="{{ movie.id }}">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <nav aria-label="Page navigation" class="mt-5">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1" aria-label="First">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+            
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+    
+    {% else %}
+    <div class="text-center py-5">
+        <div class="no-results">
+            <i class="fas fa-film fa-4x mb-4 text-muted"></i>
+            <h3 class="mb-3">No new releases found</h3>
+            <p style="color: white;" class="mb-4">Check back soon for new content</p>
+            <a href="{% url 'core:home' %}" class="btn btn-primary">
+                <i class="fas fa-home me-2"></i>Back to Home
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .featured-release {
+        background: linear-gradient(135deg, var(--card-bg), rgba(66, 135, 245, 0.2));
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .featured-content h2 {
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    
+    .page-link {
+        background-color: var(--card-bg);
+        border-color: rgba(255, 255, 255, 0.1);
+        color: var(--text-color);
+    }
+    
+    .page-link:hover {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+    }
+    
+    .page-item.active .page-link {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+    
+    /* New movie card design */
+    .movie-card-new {
+        background-color: var(--card-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        position: relative;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .movie-card-new:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    .movie-link {
+        color: var(--text-color);
+        text-decoration: none;
+        display: block;
+    }
+    
+    .movie-poster-wrapper {
+        position: relative;
+        padding-top: 150%;
+        overflow: hidden;
+        background-color: #0a0e17;
+    }
+    
+    .movie-poster-img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s;
+    }
+    
+    .movie-card-new:hover .movie-poster-img {
+        transform: scale(1.05);
+    }
+    
+    .no-poster {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #1a1a2e, #0f1723);
+    }
+    
+    .no-poster i {
+        font-size: 3rem;
+        color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .no-image-placeholder {
+        width: 100%;
+        height: 300px;
+        background: linear-gradient(135deg, #1a1a2e, #0f1723);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+    }
+    
+    .no-image-placeholder i {
+        font-size: 5rem;
+        color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .movie-info-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    
+    .movie-card-new:hover .movie-info-overlay {
+        opacity: 1;
+    }
+    
+    .movie-quick-info {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8rem;
+    }
+    
+    .movie-year {
+        color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .movie-rating {
+        color: #ffc107;
+    }
+    
+    .movie-title-new {
+        padding: 12px 10px 5px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .movie-category {
+        padding: 0 10px 12px;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+    }
+    
+    .play-button-small {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 50px;
+        height: 50px;
+        background-color: rgba(66, 135, 245, 0.8);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s, transform 0.3s;
+    }
+    
+    .movie-card-new:hover .play-button-small {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+    
+    .play-button-small i {
+        color: white;
+        font-size: 1.2rem;
+    }
+    
+    .watchlist-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background-color: rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 2;
+        opacity: 0;
+        transition: opacity 0.3s, background-color 0.3s;
+    }
+    
+    .movie-card-new:hover .watchlist-btn {
+        opacity: 1;
+    }
+    
+    .watchlist-btn:hover {
+        background-color: var(--primary-color);
+    }
+    
+    .section-title {
+        position: relative;
+        padding-bottom: 15px;
+        margin-bottom: 25px;
+    }
+    
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background: var(--primary-color);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 767.98px) {
+        .movie-card-new {
+            margin-bottom: 15px;
+        }
+        
+        .movie-title-new {
+            font-size: 0.85rem;
+            padding: 10px 8px 3px;
+        }
+        
+        .movie-category {
+            font-size: 0.75rem;
+            padding: 0 8px 10px;
+        }
+        
+        .movie-info-overlay {
+            opacity: 1;
+            padding: 10px;
+        }
+        
+        .play-button-small {
+            width: 40px;
+            height: 40px;
+            opacity: 0.8;
+        }
+        
+        .watchlist-btn {
+            opacity: 1;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle watchlist buttons
+        const watchlistBtns = document.querySelectorAll('.watchlist-btn, .add-to-list-btn');
+        
+        watchlistBtns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const movieId = this.getAttribute('data-movie-id');
+                
+                // Send AJAX request to add/remove from watchlist
+                fetch(`/add-to-watchlist/${movieId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'added') {
+                        this.innerHTML = '<i class="fas fa-check"></i>';
+                        this.classList.add('active');
+                    } else {
+                        this.innerHTML = '<i class="fas fa-plus"></i>';
+                        this.classList.remove('active');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,138 @@
+{% extends 'core/base.html' %}
+
+{% block title %}My Watchlist - DesiReel{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="content-header mb-4">
+        <h1 class="mb-2" style="color: #ffffff !important;">My Watchlist</h1>
+        <p class="lead" style="color: #ffffff !important;">Movies and shows you've saved to watch later</p>
+    </div>
+    
+    {% if watchlist_items %}
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
+        {% for movie in watchlist_items %}
+        <div class="col">
+            <div class="movie-card h-100">
+                <div class="position-relative">
+                    <span class="position-absolute top-0 end-0 m-2 px-2 py-1 rounded-pill" style="background: rgba(66, 245, 179, 0.2); color: var(--secondary-color); font-weight: 600;">
+                        <i class="fas fa-star me-1"></i>{{ movie.average_rating|floatformat:1 }}
+                    </span>
+                    {% if movie.content_type == 'webseries' %}
+                    <span class="position-absolute top-0 start-0 m-2 px-2 py-1 rounded-pill" style="background: rgba(66, 135, 245, 0.2); color: var(--primary-color); font-weight: 600;">
+                        <i class="fas fa-tv me-1"></i>Series
+                    </span>
+                    {% endif %}
+                    <img src="{{ movie.cover_image.url }}" class="movie-poster" alt="{{ movie.title }}">
+                    <div class="movie-overlay">
+                        <div class="movie-actions">
+                            <a href="{% url 'core:movie_detail' movie.id %}" class="btn btn-danger rounded-circle">
+                                <i class="fas fa-play"></i>
+                            </a>
+                            <button class="btn btn-light rounded-circle remove-from-list-btn" data-movie-id="{{ movie.id }}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title" style="color: #ffffff !important;">{{ movie.title }}</h5>
+                    <p class="card-text" style="color: #ffffff !important;">
+                        <span class="badge rounded-pill" style="background-color: var(--primary-color); margin-right: 5px;">{{ movie.release_year }}</span>
+                        <span style="color: #ffffff !important;">{{ movie.category.name }}</span>
+                    </p>
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'core:stream_movie' movie.id %}" class="btn btn-danger flex-grow-1">
+                            <i class="fas fa-play me-1"></i>Watch
+                        </a>
+                        <form method="post" action="{% url 'core:remove_from_watchlist' movie.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-light">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <div class="empty-watchlist">
+            <i class="fas fa-list fa-4x mb-4 text-muted"></i>
+            <h3 class="mb-3" style="color: #ffffff !important;">Your watchlist is empty</h3>
+            <p style="color: #ffffff !important;" class="mb-4">Add movies and shows to your watchlist to watch them later</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{% url 'core:content_type' 'movie' %}" class="btn btn-primary">
+                    <i class="fas fa-film me-2"></i>Browse Movies
+                </a>
+                <a href="{% url 'core:content_type' 'webseries' %}" class="btn btn-outline-light">
+                    <i class="fas fa-tv me-2"></i>Browse Series
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .movie-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    
+    .movie-card:hover .movie-overlay {
+        opacity: 1;
+    }
+    
+    .movie-actions {
+        display: flex;
+        gap: 15px;
+    }
+    
+    .movie-actions .btn {
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+    
+    .movie-card {
+        background-color: var(--card-bg);
+    }
+    
+    .movie-poster {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+    }
+    
+    /* Force text colors */
+    h1, h2, h3, h4, h5, h6, p, span, div {
+        color: #ffffff !important;
+    }
+    
+    .text-muted {
+        color: #d9d9d9 !important;
+    }
+    
+    .card-title, .card-text {
+        color: #ffffff !important;
+    }
+</style>
+{% endblock %}

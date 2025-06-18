@@ -1,0 +1,176 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ genre_title }} Movies - DesiReel{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="content-header mb-4">
+        <h1 class="mb-2">{{ genre_title }} Movies</h1>
+        <p class="lead" style="color: white;">Explore our collection of {{ genre_title|lower }} movies and shows</p>
+    </div>
+    
+    {% if movies %}
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
+        {% for movie in movies %}
+        <div class="col">
+            <div class="movie-card h-100">
+                <div class="position-relative">
+                    <span class="position-absolute top-0 end-0 m-2 px-2 py-1 rounded-pill" style="background: rgba(66, 245, 179, 0.2); color: var(--secondary-color); font-weight: 600;">
+                        <i class="fas fa-star me-1"></i>{{ movie.average_rating|floatformat:1 }}
+                    </span>
+                    {% if movie.content_type == 'webseries' %}
+                    <span class="position-absolute top-0 start-0 m-2 px-2 py-1 rounded-pill" style="background: rgba(66, 135, 245, 0.2); color: var(--primary-color); font-weight: 600;">
+                        <i class="fas fa-tv me-1"></i>Series
+                    </span>
+                    {% endif %}
+                    <img src="{{ movie.cover_image.url }}" class="movie-poster" alt="{{ movie.title }}">
+                    <div class="movie-overlay">
+                        <div class="movie-actions">
+                            <a href="{% url 'core:movie_detail' movie.id %}" class="btn btn-danger rounded-circle">
+                                <i class="fas fa-play"></i>
+                            </a>
+                            <button class="btn btn-light rounded-circle add-to-list-btn" data-movie-id="{{ movie.id }}">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ movie.title }}</h5>
+                    <p class="card-text" style="color: white;">
+                        <span class="badge rounded-pill" style="background-color: var(--primary-color); margin-right: 5px;">{{ movie.release_year }}</span>
+                        <span>{{ movie.category.name }}</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <nav aria-label="Page navigation" class="mt-5">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1" aria-label="First">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+            
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+    
+    {% else %}
+    <div class="text-center py-5">
+        <div class="no-results">
+            <i class="fas fa-film fa-4x mb-4 text-muted"></i>
+            <h3 class="mb-3">No movies found</h3>
+            <p style="color: white;" class="mb-4">We couldn't find any {{ genre_title|lower }} movies at the moment</p>
+            <a href="{% url 'core:home' %}" class="btn btn-primary">
+                <i class="fas fa-home me-2"></i>Back to Home
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Related Categories Section -->
+<div class="container py-4">
+    <h3 class="mb-4">Related Categories</h3>
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-3">
+        {% for category in related_categories %}
+        <div class="col">
+            <a href="{% url 'core:category' category.id %}" class="text-decoration-none">
+                <div class="category-card">
+                    <i class="fas fa-film"></i>
+                    <h3>{{ category.name }}</h3>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-link {
+        background-color: var(--card-bg);
+        border-color: rgba(255, 255, 255, 0.1);
+        color: var(--text-color);
+    }
+    
+    .page-link:hover {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+    }
+    
+    .page-item.active .page-link {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+    
+    .category-card {
+        background: linear-gradient(135deg, var(--card-bg), rgba(66, 135, 245, 0.2));
+        border-radius: 12px;
+        padding: 20px 15px;
+        text-align: center;
+        height: 100px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(66, 135, 245, 0.1);
+    }
+    
+    .category-card:hover {
+        background: linear-gradient(135deg, rgba(66, 135, 245, 0.2), var(--primary-color));
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(66, 135, 245, 0.3);
+    }
+    
+    .category-card i {
+        font-size: 1.5rem;
+        color: var(--secondary-color);
+        margin-bottom: 8px;
+    }
+    
+    .category-card h3 {
+        color: #ffffff;
+        font-size: 0.9rem;
+        margin: 0;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
