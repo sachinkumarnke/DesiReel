@@ -1,4 +1,8 @@
 # DesiReel - Indian Movie & Web Series Streaming Platform
+![Screenshot 2025-06-15 213821](https://github.com/user-attachments/assets/2714e704-5ea4-4c71-8ce2-c0a0b69c83cd)
+![Screenshot 2025-06-15 213441](https://github.com/user-attachments/assets/82e7da31-4c30-457e-9037-f8b157362f0d)
+![Screenshot 2025-06-15 213600](https://github.com/user-attachments/assets/55ca051b-05ab-4d9c-a55a-4721cb9eafc1)
+![Screenshot 2025-06-15 213751](https://github.com/user-attachments/assets/5f71814f-d4c7-4cfe-97b5-bc64356a5b1c)
 
 DesiReel is a comprehensive streaming platform focused on Indian content, including Bollywood, South Indian, and regional movies and web series.
 
